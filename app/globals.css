@@ -3,6 +3,17 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* AuraTrack Color Palette */
+  --chantilly: #f3b2dd;
+  --wistful: #9fa1d2;
+  --sidecar: #f1e6ae;
+  --blizzard-blue: #a0dbe9;
+  --mint-tulip: #c4f2e8;
+  --ghost: #cdced3;
+  --clam-shell: #d0b4b3;
+  --ethereal-purple: #d4a5d4;
+  --ethereal-blue: #86bada;
 }
 
 @theme inline {
@@ -10,6 +21,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  --color-chantilly: #f3b2dd;
+  --color-wistful: #9fa1d2;
+  --color-sidecar: #f1e6ae;
+  --color-blizzard-blue: #a0dbe9;
+  --color-mint-tulip: #c4f2e8;
+  --color-ghost: #cdced3;
+  --color-clam-shell: #d0b4b3;
+  --color-ethereal-purple: #d4a5d4;
+  --color-ethereal-blue: #86bada;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +43,195 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animation for floating elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Ethereal glow effect */
+@keyframes etherealGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 165, 212, 0.2), 0 0 40px rgba(196, 242, 232, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(212, 165, 212, 0.4), 0 0 60px rgba(196, 242, 232, 0.2);
+  }
+}
+
+.ethereal-glow {
+  animation: etherealGlow 4s ease-in-out infinite;
+}
+
+/* Smooth hover transitions */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(212, 165, 212, 0.15);
+}
+
+/* Gradient text animation */
+@keyframes gradientFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientFlow 8s ease infinite;
+}
+
+/* Smooth button transitions with ethereal feel */
+.ethereal-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ethereal-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.ethereal-button:hover::before {
+  left: 100%;
+}
+
+.ethereal-button:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 15px 35px rgba(212, 165, 212, 0.3);
+}
+
+/* Feature cards with ethereal hover */
+.feature-card {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(212, 165, 212, 0.03) 100%);
+}
+
+.feature-card:hover {
+  transform: translateY(-16px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(212, 165, 212, 0.25), 0 20px 40px rgba(134, 186, 218, 0.15);
+}
+
+/* Link hover effects */
+.ethereal-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.ethereal-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #d4a5d4, #86bada);
+  transition: width 0.3s ease;
+}
+
+.ethereal-link:hover::after {
+  width: 100%;
+}
+
+/* Soft focus blur effect */
+.soft-blur {
+  filter: blur(0px);
+  transition: filter 0.3s ease;
+}
+
+.soft-blur:hover {
+  filter: blur(0px);
+}
+
+/* Enhanced gradient background */
+.aura-gradient {
+  background: linear-gradient(135deg, #d4a5d4 0%, #c4f2e8 25%, #86bada 50%, #9fa1d2 75%, #f1e6ae 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Enchanted pulse effect */
+@keyframes enchantedPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.enchanted-pulse {
+  animation: enchantedPulse 3s ease-in-out infinite;
+}
+
+/* Radiant shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 8s infinite;
+}
+
+/* Smooth transitions for interactive elements */
+button, a {
+  transition: all 0.3s ease;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-12px) scale(1.01);
+  }
 }
