@@ -1,237 +1,360 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  
-  /* AuraTrack Color Palette */
-  --chantilly: #f3b2dd;
-  --wistful: #9fa1d2;
-  --sidecar: #f1e6ae;
-  --blizzard-blue: #a0dbe9;
-  --mint-tulip: #c4f2e8;
-  --ghost: #cdced3;
-  --clam-shell: #d0b4b3;
-  --ethereal-purple: #d4a5d4;
-  --ethereal-blue: #86bada;
+--background: #ffffff;
+--foreground: #171717;
+
+/* AuraTrack Color Palette */
+--chantilly: #f3b2dd;
+--wistful: #9fa1d2;
+--sidecar: #f1e6ae;
+--blizzard-blue: #a0dbe9;
+--mint-tulip: #c4f2e8;
+--ghost: #cdced3;
+--clam-shell: #d0b4b3;
+--ethereal-purple: #d4a5d4;
+--ethereal-blue: #86bada;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  
-  --color-chantilly: #f3b2dd;
-  --color-wistful: #9fa1d2;
-  --color-sidecar: #f1e6ae;
-  --color-blizzard-blue: #a0dbe9;
-  --color-mint-tulip: #c4f2e8;
-  --color-ghost: #cdced3;
-  --color-clam-shell: #d0b4b3;
-  --color-ethereal-purple: #d4a5d4;
-  --color-ethereal-blue: #86bada;
+--color-background: var(--background);
+--color-foreground: var(--foreground);
+--font-sans: var(--font-geist-sans);
+--font-mono: var(--font-geist-mono);
+
+--color-chantilly: #f3b2dd;
+--color-wistful: #9fa1d2;
+--color-sidecar: #f1e6ae;
+--color-blizzard-blue: #a0dbe9;
+--color-mint-tulip: #c4f2e8;
+--color-ghost: #cdced3;
+--color-clam-shell: #d0b4b3;
+--color-ethereal-purple: #d4a5d4;
+--color-ethereal-blue: #86bada;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+--background: #0a0a0a;
+--foreground: #ededed;
+}
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+background: var(--background);
+color: var(--foreground);
+font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
 }
 
 /* Smooth scrolling */
 html {
-  scroll-behavior: smooth;
+scroll-behavior: smooth;
 }
 
 /* Animation for floating elements */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+0%, 100% {
+transform: translateY(0px);
+}
+50% {
+transform: translateY(-20px);
+}
 }
 
 .float {
-  animation: float 4s ease-in-out infinite;
+animation: float 4s ease-in-out infinite;
 }
 
 /* Ethereal glow effect */
 @keyframes etherealGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(212, 165, 212, 0.2), 0 0 40px rgba(196, 242, 232, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(212, 165, 212, 0.4), 0 0 60px rgba(196, 242, 232, 0.2);
-  }
+0%, 100% {
+box-shadow: 0 0 20px rgba(212, 165, 212, 0.2), 0 0 40px rgba(196, 242, 232, 0.1);
+}
+50% {
+box-shadow: 0 0 30px rgba(212, 165, 212, 0.4), 0 0 60px rgba(196, 242, 232, 0.2);
+}
 }
 
 .ethereal-glow {
-  animation: etherealGlow 4s ease-in-out infinite;
+animation: etherealGlow 4s ease-in-out infinite;
 }
 
 /* Smooth hover transitions */
 .hover-lift {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hover-lift:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(212, 165, 212, 0.15);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(212, 165, 212, 0.15), 0 15px 30px rgba(134, 186, 218, 0.1);
+}
+
+/* Radiant border for cards on hover */
+.hover-lift::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px; /* rounded-xl + 2px */
+  background: linear-gradient(135deg, var(--color-ethereal-purple), var(--color-mint-tulip));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
 }
 
 /* Gradient text animation */
 @keyframes gradientFlow {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+0%, 100% {
+background-position: 0% 50%;
+}
+50% {
+background-position: 100% 50%;
+}
 }
 
 .gradient-animate {
-  background-size: 200% 200%;
-  animation: gradientFlow 8s ease infinite;
+background-size: 200% 200%;
+animation: gradientFlow 8s ease infinite;
 }
 
 /* Smooth button transitions with ethereal feel */
 .ethereal-button {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+position: relative;
+overflow: hidden;
+transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .ethereal-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.6s ease;
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+transition: left 0.6s ease;
 }
 
 .ethereal-button:hover::before {
-  left: 100%;
+left: 100%;
 }
 
 .ethereal-button:hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 15px 35px rgba(212, 165, 212, 0.3);
-}
-
-/* Feature cards with ethereal hover */
-.feature-card {
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(212, 165, 212, 0.03) 100%);
-}
-
-.feature-card:hover {
-  transform: translateY(-16px) scale(1.02);
-  box-shadow: 0 30px 60px rgba(212, 165, 212, 0.25), 0 20px 40px rgba(134, 186, 218, 0.15);
+transform: scale(1.05) translateY(-2px);
+box-shadow: 0 15px 35px rgba(212, 165, 212, 0.3);
 }
 
 /* Link hover effects */
 .ethereal-link {
-  position: relative;
-  transition: color 0.3s ease;
+position: relative;
+transition: color 0.3s ease;
 }
 
 .ethereal-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #d4a5d4, #86bada);
-  transition: width 0.3s ease;
+content: '';
+position: absolute;
+bottom: -2px;
+left: 0;
+width: 0;
+height: 2px;
+background: linear-gradient(90deg, #d4a5d4, #86bada);
+transition: width 0.3s ease;
 }
 
 .ethereal-link:hover::after {
-  width: 100%;
+width: 100%;
 }
 
 /* Soft focus blur effect */
 .soft-blur {
-  filter: blur(0px);
-  transition: filter 0.3s ease;
+filter: blur(0px);
+transition: filter 0.3s ease;
 }
 
 .soft-blur:hover {
-  filter: blur(0px);
+filter: blur(0px);
 }
 
 /* Enhanced gradient background */
 .aura-gradient {
-  background: linear-gradient(135deg, #d4a5d4 0%, #c4f2e8 25%, #86bada 50%, #9fa1d2 75%, #f1e6ae 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  /* A slightly darker, richer version of the original gradient */
+  background: linear-gradient(
+    135deg,
+    #b88cb8 0%,
+    #a9d6c9 25%,
+    #6c9fbc 50%,
+    #8789b6 75%,
+    #d5ca98 100%
+  );
+background-size: 400% 400%;
+animation: gradientShift 15s ease infinite;
 }
 
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+0% {
+background-position: 0% 50%;
+}
+50% {
+background-position: 100% 50%;
+}
+100% {
+background-position: 0% 50%;
+}
 }
 
 /* Enchanted pulse effect */
 @keyframes enchantedPulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+0%, 100% {
+opacity: 1;
+}
+50% {
+opacity: 0.7;
+}
 }
 
 .enchanted-pulse {
-  animation: enchantedPulse 3s ease-in-out infinite;
+animation: enchantedPulse 3s ease-in-out infinite;
 }
 
 /* Radiant shimmer effect */
 @keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
+0% {
+background-position: -1000px 0;
+}
+100% {
+background-position: 1000px 0;
+}
 }
 
 .shimmer {
-  animation: shimmer 8s infinite;
+animation: shimmer 8s infinite;
+background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
 }
+
 
 /* Smooth transitions for interactive elements */
 button, a {
-  transition: all 0.3s ease;
+transition: all 0.3s ease;
+cursor: pointer;
 }
 
+/* Radiant border for hero card */
+.radiant-border {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- NEW ETHEREAL ORB STYLES --- */
+
+@keyframes moveOrb {
+0%, 100% {
+transform: translateY(0) translateX(0) scale(1);
+opacity: 0.7;
+}
+25% {
+transform: translateY(30px) translateX(-40px) scale(1.1);
+opacity: 0.5;
+}
+50% {
+transform: translateY(-20px) translateX(50px) scale(0.9);
+opacity: 0.8;
+}
+75% {
+transform: translateY(10px) translateX(-30px) scale(1.05);
+opacity: 0.6;
+}
+}
+
+.orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(80px); /* This creates the soft, ethereal glow /
+animation: moveOrb 20s infinite ease-in-out;
+opacity: 0.7;
+z-index: 1; / Behind content, but on top of base gradient */
+}
+.orb-1 {
+width: 400px;
+height: 400px;
+background-color: var(--color-ethereal-purple);
+top: 10%;
+left: 15%;
+animation-duration: 25s;
+}
+
+.orb-2 {
+width: 300px;
+height: 300px;
+background-color: var(--color-mint-tulip);
+top: 50%;
+left: 60%;
+animation-duration: 20s;
+animation-delay: -10s;
+}
+
+.orb-3 {
+width: 250px;
+height: 250px;
+background-color: var(--color-sidecar);
+top: 30%;
+left: 80%;
+animation-duration: 18s;
+animation-delay: -5s;
+}
 /* Responsive improvements */
 @media (max-width: 768px) {
-  .float {
-    animation: float 3s ease-in-out infinite;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-12px) scale(1.01);
-  }
+.float {
+animation: float 3s ease-in-out infinite;
+}
+
+.feature-card:hover {
+transform: translateY(-12px) scale(1.01);
+}
+
+/* Hide orbs on very small screens if they become too distracting */
+.orb {
+filter: blur(60px);
+}
+
+.orb-1 {
+width: 300px;
+height: 300px;
+}
+.orb-2 {
+width: 200px;
+height: 200px;
+}
+.orb-3 {
+width: 150px;
+height: 150px;
+}
+}
+
+/* --- Custom Scrollbar --- */
+
+/* Works on Firefox */
+* {
+  scrollbar-color: var(--wistful) rgba(134, 186, 218, 0.1);
+}
+
+/* Works on Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(134, 186, 218, 0.1); /* A soft, transparent track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--wistful);
+  border-radius: 20px;
+  border: 3px solid rgba(0, 0, 0, 0); /* Creates padding around thumb */
+  background-clip: padding-box;
 }
