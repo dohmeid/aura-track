@@ -1,8 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {
-  LogIn, UserPlus, Sparkles, BookMarked, BarChart3, ScatterChart, Github, Twitter, Linkedin
-} from 'lucide-react';
+import { LogIn, UserPlus, BookMarked, BarChart3, ScatterChart } from 'lucide-react';
 import Logo from './components/Logo';
 import Footer from './components/Footer';
 
