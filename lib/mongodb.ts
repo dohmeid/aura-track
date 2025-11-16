@@ -1,6 +1,10 @@
-import mongoose from 'mongoose'
+import mongoose, { Mongoose } from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI as string
+// This utility file handles the connection to the MongoDB database.
+// a singleton pattern was used here to optimize performance in Next.js's serverless environment.
+
+// Retrieve the MongoDB connection string from environment variables.
+const MONGODB_URI = process.env.MONGODB_URI
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -8,26 +12,52 @@ if (!MONGODB_URI) {
   )
 }
 
-let isConnected = false // Track the connection status
-
-export const connectDB = async (): Promise<void> => {
-  if (isConnected) {
-    console.log('Using existing MongoDB connection')
-    return
-  }
-
-  try {
-    const mongooseInstance = await mongoose.connect(
-      process.env.MONGODB_URI as string,
-      {
-        dbName: 'moodtracker' 
-      }
-    )
-
-    isConnected = mongooseInstance.connection.readyState === 1
-    console.log('✅ MongoDB connected:', mongooseInstance.connection.host)
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error)
-    throw new Error('Failed to connect to MongoDB')
-  }
+// type for our cached mongoose object.
+interface MongooseCache {
+  conn: Mongoose | null
+  promise: Promise<Mongoose> | null
 }
+
+/**
+ * We cache the database connection (mongoose.conn) and the promise (mongoose.promise) on the global object.
+ * This prevents multiple, concurrent connections from being created during hot-reloading in development.
+ *
+ * In production, serverless functions spin up and down, and this ensures
+ * we reuse an existing connection if one is available.
+ */
+let cached: MongooseCache = (global as any).mongoose
+
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null }
+}
+
+async function connectDB () {
+  // If we already have a connection, return it immediately.
+  if (cached.conn) {
+    console.log('Using cached database connection.')
+    return cached.conn
+  }
+
+  // If a connection promise is already in progress, wait for it to resolve.
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false
+    }
+    console.log('Creating new database connection.')
+    cached.promise = mongoose.connect(MONGODB_URI!, opts)
+  }
+
+  // Wait for the connection to complete and store it in the cache.
+  try {
+    cached.conn = await cached.promise
+  } catch (e) {
+    // If connection fails, clear the promise to allow retries.
+    cached.promise = null
+    throw e
+  }
+
+  // Return the active connection.
+  return cached.conn
+}
+
+export default connectDB
