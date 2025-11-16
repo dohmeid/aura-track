@@ -1,25 +1,24 @@
-'use client';
 import Link from 'next/link';
 import { LogIn, UserPlus, BookMarked, BarChart3, ScatterChart } from 'lucide-react';
-import Logo from './components/Logo';
-import Footer from './components/Footer';
+import Logo from './components/general/Logo';
+import Footer from './components/general/Footer';
 
 export default function LandingPage() {
   const features = [
     {
-      icon: <BookMarked className="w-10 h-10 text-ethereal-purple" />,
+      icon: <BookMarked className="w-10 h-10 text-chantilly" />,
       title: 'Log Your Daily Mood',
       description:
         'Easily record your feelings and emotions throughout the day with an intuitive and simple interface.',
     },
     {
-      icon: <BarChart3 className="w-10 h-10 text-ethereal-purple" />,
+      icon: <BarChart3 className="w-10 h-10 text-chantilly" />,
       title: 'Track Emotional Trends',
       description:
         'Watch your emotional patterns evolve over weeks and months. Identify triggers and celebrate your progress.',
     },
     {
-      icon: <ScatterChart className="w-10 h-10 text-ethereal-purple" />,
+      icon: <ScatterChart className="w-10 h-10 text-chantilly" />,
       title: 'Visualize Your Patterns',
       description:
         'See your mood data come to life with beautiful, insightful charts and graphs that reveal your unique inner aura.',
@@ -37,7 +36,7 @@ export default function LandingPage() {
 
       {/* Header */}
       <header className="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
-        <Link href="/" className="flex items-center gap-2 group"><Logo /></Link>
+        <Link href="/" className="flex items-center gap-2 group" aria-label="AuraTrack Home"><Logo /></Link>
 
         <nav className="flex gap-4">
           <Link href="/login" className="ethereal-button bg-white/10 backdrop-blur-md text-white/90 font-semibold py-2 px-5 rounded-full hover:shadow-lg transition-all duration-300 ease-in-out flex items-center gap-2">
@@ -104,7 +103,7 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-bold text-white/90 mb-4">
                     {feature.title}
                   </h3>
-                  <p className="text-white/70">{feature.description}</p>
+                  <p className="text-white/80">{feature.description}</p>
                 </div>
               ))}
             </div>

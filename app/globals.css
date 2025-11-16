@@ -22,15 +22,15 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  --color-chantilly: #f3b2dd;
-  --color-wistful: #9fa1d2;
-  --color-sidecar: #f1e6ae;
-  --color-blizzard-blue: #a0dbe9;
-  --color-mint-tulip: #c4f2e8;
-  --color-ghost: #cdced3;
-  --color-clam-shell: #d0b4b3;
-  --color-ethereal-purple: #d4a5d4;
-  --color-ethereal-blue: #86bada;
+  --color-chantilly: var(--chantilly);
+  --color-wistful: var(--wistful);
+  --color-sidecar: var(--sidecar);
+  --color-blizzard-blue: var(--blizzard-blue);
+  --color-mint-tulip: var(--mint-tulip);
+  --color-ghost: var(--ghost);
+  --color-clam-shell: var(--clam-shell);
+  --color-ethereal-purple: var(--ethereal-purple);
+  --color-ethereal-blue: var(--ethereal-blue);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,6 +52,7 @@ html {
   scroll-behavior: smooth;
 }
 
+/*
 /* Animation for floating elements */
 @keyframes float {
   0%,
@@ -81,13 +82,15 @@ html {
 }
 
 .ethereal-glow {
+  will-change: box-shadow;
   animation: etherealGlow 4s ease-in-out infinite;
 }
 
 /* Smooth hover transitions */
 .hover-lift {
   position: relative;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, box-shadow;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hover-lift:hover {
@@ -289,12 +292,13 @@ a {
 .orb {
   position: absolute;
   border-radius: 50%;
+  will-change: transform, opacity;
   filter: blur(80px);
 }
 .orb-1 {
   width: 400px;
   height: 400px;
-  background-color: var(--color-ethereal-purple);
+  background-color: var(--ethereal-purple);
   top: 10%;
   left: 15%;
   animation-duration: 25s;
@@ -302,7 +306,7 @@ a {
 .orb-2 {
   width: 300px;
   height: 300px;
-  background-color: var(--color-mint-tulip);
+  background-color: var(--mint-tulip);
   top: 50%;
   left: 60%;
   animation-duration: 20s;
@@ -311,7 +315,7 @@ a {
 .orb-3 {
   width: 250px;
   height: 250px;
-  background-color: var(--color-sidecar);
+  background-color: var(--sidecar);
   top: 30%;
   left: 80%;
   animation-duration: 18s;
