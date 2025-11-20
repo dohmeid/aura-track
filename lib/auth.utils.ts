@@ -1,12 +1,13 @@
 import { hash, compare } from 'bcryptjs'
-import { sign, verify, Secret, SignOptions, JwtPayload } from 'jsonwebtoken'
-import { SignJWT, jwtVerify } from 'jose'
+import { JWTPayload, SignJWT, jwtVerify } from 'jose'
 
 // This file centralizes the security functions:
 // 1. Hashing and comparing  passwords with bcrypt
 // 2. Creating and verifying JSON Web Tokens (JWTs)
 
 const JWT_SECRET = process.env.JWT_SECRET
+const secretKey = new TextEncoder().encode(JWT_SECRET)
+const DEFAULT_EXPIRATION = '7d' // Use one standard place
 
 if (!JWT_SECRET) {
   throw new Error(
@@ -33,68 +34,24 @@ export const comparePasswords = async (
   return isMatch
 }
 
-/**
- * Creates a JSON Web Token (JWT) for a user.
- * This function is for standard backend logic (API routes).
- * @param payload The data to include in the token (e.g., userId).
- * @returns The signed JWT string.
- */
-export const createToken = (
-  payload: Record<string, any>,
-  options: SignOptions = { expiresIn: '1d' }
-): string => {
-  return sign(payload, JWT_SECRET as Secret, options)
-}
-
-/**
- * Verifies a JSON Web Token (JWT).
- * This function is for standard backend logic (API routes).
- * @param token The JWT string to verify.
- * @returns The decoded payload if the token is valid.
- */
-export const verifyToken = (token: string): JwtPayload => {
-  try {
-    const decoded = verify(token, JWT_SECRET) as JwtPayload
-    return decoded
-  } catch (error) {
-    throw new Error('Invalid or expired token.')
-  }
-}
-
-// --- Functions for 'jose' (Used in Middleware) ---
-const secretKey = new TextEncoder().encode(JWT_SECRET)
-
-/**
- * Creates a JWT using 'jose' for use in Edge-compatible environments.
- * @param payload The data to include in the token.
- * @param expiresIn Expiration time (e.g., "1d", "2h").
- * @returns A promise that resolves to the signed JWT string.
- */
-export const createTokenEdge = async (
-  payload: Record<string, any>,
-  expiresIn: string = '1d'
+export const createToken = async (
+  payload: Record<string, any>
 ): Promise<string> => {
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime(expiresIn)
+    .setExpirationTime(DEFAULT_EXPIRATION)
     .sign(secretKey)
   return token
 }
 
-/**
- * Verifies a JWT using 'jose' for use in Edge-compatible environments.
- * @param token The JWT string.
- * @returns A promise that resolves to the decoded payload if valid.
- */
-export const verifyTokenEdge = async (
+export const verifyTokenServer = async (
   token: string
-): Promise<object | null> => {
+): Promise<JWTPayload | null> => {
   try {
     const { payload } = await jwtVerify(token, secretKey)
     return payload
   } catch (error) {
-    // This will catch expired tokens, invalid signatures, etc.
     return null
   }
 }

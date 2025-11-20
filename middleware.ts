@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { verifyTokenEdge } from '@/lib/auth.utils'
+import { verifyTokenServer } from '@/lib/auth.utils'
 
 // This middleware file acts as a gatekeeper for the application.
 // It runs before a request is completed, allowing to redirect or rewrite requests based on authentication status.
@@ -16,12 +16,12 @@ export async function middleware (request: NextRequest) {
 
   // Check if the current path is a public path
   // We check for exact matches for all public paths.
-  const isPublicPath = publicPaths.includes(pathname);
+  const isPublicPath = publicPaths.includes(pathname)
 
   // Try to verify the token
   let payload = null
   if (token) {
-    payload = await verifyTokenEdge(token)
+    payload = await verifyTokenServer(token)
   }
 
   // --- REDIRECTION LOGIC ---
@@ -30,8 +30,7 @@ export async function middleware (request: NextRequest) {
     // If a logged-in user tries to access /login or /signup,
     // redirect them to a protected page, like the dashboard.
     if (pathname === '/login' || pathname === '/signup') {
-     // const dashboardUrl = new URL('/home', request.url)
-     const dashboardUrl = new URL(pathname, request.url)
+      const dashboardUrl = new URL('/home', request.url)
       return NextResponse.redirect(dashboardUrl)
     }
   }
@@ -39,7 +38,8 @@ export async function middleware (request: NextRequest) {
   // Scenario 2: User is not logged in (no token or invalid token)
   if (!payload) {
     // If a logged-out user tries to access a protected page  (any page that is NOT public), redirect them to the login page.
-    if (!isPublicPath && pathname !== '/home') { // Also redirect from /home if not logged in
+    if (!isPublicPath && pathname !== '/home') {
+      // Also redirect from /home if not logged in
       const loginUrl = new URL('/login', request.url)
       //'redirect_url' query param to send them back to the page they wanted after they log in.
       loginUrl.searchParams.set('redirect_url', pathname)

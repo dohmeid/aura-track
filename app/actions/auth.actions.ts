@@ -1,9 +1,13 @@
 'use server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { MongoError } from 'mongodb'
 import connectDB from '@/lib/mongodb'
-import { comparePasswords, createToken, hashPassword } from '@/lib/auth.utils'
+import {
+  comparePasswords,
+  createToken,
+  hashPassword,
+  verifyTokenServer
+} from '@/lib/auth.utils'
 import { loginSchema, signUpSchema } from '@/lib/validation/auth.validations'
 import User from '@/lib/models/user.model'
 
@@ -87,7 +91,7 @@ export async function signUp (
   } catch (error) {
     console.error('SIGNUP_ACTION_ERROR:', error)
     // Handle potential database errors (like unique index violations)
-    if (error instanceof MongoError && error.code === 11000) {
+    if (error && (error as any).code === 11000) {
       return {
         message: 'A user with that email or username already exists.',
         success: false
@@ -153,7 +157,12 @@ export async function login (
     }
 
     // Create JWT token
-    const token = createToken({ userId: user._id.toString() })
+    //const token = createToken({ userId: user._id.toString() })
+    const token = await createToken({
+      userId: user._id.toString(),
+      email: user.email,
+      username: user.username
+    })
 
     // Set cookie
     ;(
@@ -187,7 +196,42 @@ export async function login (
  * Server action for user logout.
  * Deletes the session cookie.
  */
-export async function logout () {
-  ;(await cookies()).delete('token')
+export async function logout (): Promise<void> {
+  const cookieStore = await cookies()
+  cookieStore.delete('token')
   redirect('/login')
+}
+
+/**
+ * Server action to get the currently logged-in user from the httpOnly token.
+ * This reads the secure cookie, verifies the token, and returns user data.
+ *
+ * Can be called from Server Components or Client Components.
+ * @returns User object with userId, email, and username, or null if not authenticated
+ */
+export async function getCurrentUser () {
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('token')?.value
+
+    if (!token) {
+      return null
+    }
+
+    // Verify token using the standard verifyToken function
+    const decoded = await verifyTokenServer(token)
+
+    if (!decoded) {
+      return null
+    }
+
+    return {
+      userId: decoded.userId as string,
+      email: decoded.email as string,
+      username: decoded.username as string
+    }
+  } catch (error) {
+    console.error('Error getting current user:', error)
+    return null
+  }
 }
