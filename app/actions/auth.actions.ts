@@ -57,20 +57,20 @@ export async function signUp (
     })
 
     if (existingUser) {
+      // Determine which specific field has the conflict
+      const errors: Record<string, string> = {}
+      if (existingUser.email === email.toLowerCase()) {
+        errors.email = 'Email is already taken.'
+      }
+      if (existingUser.username === username) {
+        errors.username = 'Username is already taken.'
+      }
+
       return {
         message:
           'A user with that email or username already exists. Please try another.',
         success: false,
-        errors: {
-          email:
-            existingUser.email === email.toLowerCase()
-              ? 'Email is already taken.'
-              : '',
-          username:
-            existingUser.username === username
-              ? 'Username is already taken.'
-              : ''
-        }
+        errors: errors // Set specific errors for FormInput components
       }
     }
 
