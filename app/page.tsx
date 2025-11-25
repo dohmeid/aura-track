@@ -27,7 +27,6 @@ export default function LandingPage() {
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden">
-
       {/* Background container with animated gradient and Floating circles (styles in globals.css)*/}
       <div className="absolute inset-0 aura-gradient z-0"></div>
       <div className="orb orb-1"></div>
@@ -36,13 +35,21 @@ export default function LandingPage() {
 
       {/* Header */}
       <header className="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
-        <Link href="/" className="flex items-center gap-2 group" aria-label="AuraTrack Home"><Logo /></Link>
+        <Link href="/" className="flex items-center gap-2 group" aria-label="AuraTrack Home">
+          <Logo />
+        </Link>
 
         <nav className="flex gap-4">
-          <Link href="/login" className="ethereal-button bg-white/10 backdrop-blur-md text-white/90 font-semibold py-2 px-5 rounded-full hover:shadow-lg transition-all duration-300 ease-in-out flex items-center gap-2">
+          <Link
+            href="/login"
+            className="ethereal-button bg-white/10 backdrop-blur-md text-white/90 font-semibold py-2 px-5 rounded-full hover:shadow-lg transition-all duration-300 ease-in-out flex items-center gap-2"
+          >
             <LogIn className="w-4 h-4" /> Login
           </Link>
-          <Link href="/signup" className="ethereal-button bg-white/90 backdrop-blur-md text-wistful font-bold py-2 px-5 rounded-full hover:shadow-xl transition-all duration-300 ease-in-out flex items-center gap-2">
+          <Link
+            href="/signup"
+            className="ethereal-button bg-white/90 backdrop-blur-md text-wistful font-bold py-2 px-5 rounded-full hover:shadow-xl transition-all duration-300 ease-in-out flex items-center gap-2"
+          >
             <UserPlus className="w-4 h-4" /> Sign Up
           </Link>
         </nav>
@@ -50,7 +57,6 @@ export default function LandingPage() {
 
       {/* Main Content */}
       <main className="relative z-10">
-
         {/* Hero Section */}
         <section className="flex min-h-screen flex-col items-center justify-center text-center p-8">
           <div className="w-full max-w-3xl bg-white/20 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-1xl p-10 md:p-16 ethereal-glow radiant-border">
@@ -60,9 +66,7 @@ export default function LandingPage() {
             >
               Discover Your
               <br />
-              <span
-                className="gradient-animate bg-clip-text text-transparent bg-linear-to-r from-chantilly via-wistful to-mint-tulip"
-              >
+              <span className="gradient-animate bg-clip-text text-transparent bg-linear-to-r from-chantilly via-wistful to-mint-tulip">
                 Inner Aura
               </span>
             </h1>
@@ -71,11 +75,14 @@ export default function LandingPage() {
               className="text-lg md:text-xl text-white/80 mb-10 max-w-lg mx-auto"
               style={{ textShadow: '0 1px 4px rgba(0,0,0,0.2)' }}
             >
-              Understand your emotions. Track your moods and visualize the
-              beautiful patterns of your inner world.
+              Understand your emotions. Track your moods and visualize the beautiful patterns of
+              your inner world.
             </p>
 
-            <Link href="/login" className="ethereal-button bg-ethereal-purple text-white font-bold py-4 px-10 rounded-full text-lg shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105 inline-block">
+            <Link
+              href="/login"
+              className="ethereal-button bg-ethereal-purple text-white font-bold py-4 px-10 rounded-full text-lg shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105 inline-block"
+            >
               Begin Your Journey
             </Link>
           </div>
@@ -100,14 +107,11 @@ export default function LandingPage() {
                   <div className="flex justify-center mb-6" aria-hidden="true">
                     {feature.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-white/90 mb-4">
-                    {feature.title}
-                  </h3>
+                  <h3 className="text-2xl font-bold text-white/90 mb-4">{feature.title}</h3>
                   <p className="text-white/80">{feature.description}</p>
                 </div>
               ))}
             </div>
-
           </div>
         </section>
 

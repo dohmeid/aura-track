@@ -9,9 +9,9 @@ interface SidebarLayoutProps {
 
 export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Sidebar user={user} />
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main className="flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

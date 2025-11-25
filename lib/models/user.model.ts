@@ -1,13 +1,13 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose';
 
 // This file defines the User model for MongoDB.
 export interface IUser extends Document {
-  username: string
-  email: string
-  passwordHash: string // for security, we store the hash of the password not the password itself
-  birthDate: Date
-  createdAt: Date
-  updatedAt: Date
+  username: string;
+  email: string;
+  passwordHash: string; // for security, we store the hash of the password not the password itself
+  birthDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const userSchema: Schema<IUser> = new Schema(
@@ -17,7 +17,7 @@ const userSchema: Schema<IUser> = new Schema(
       required: [true, 'Username is required'],
       unique: true,
       trim: true,
-      minlength: [3, 'Username must be at least 3 characters long.']
+      minlength: [3, 'Username must be at least 3 characters long.'],
     },
     email: {
       type: String,
@@ -25,26 +25,23 @@ const userSchema: Schema<IUser> = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      match: [
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        'Please provide a valid email address.'
-      ]
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please provide a valid email address.'],
     },
     passwordHash: {
       type: String,
       required: [true, 'Password is required'],
-      select: false
+      select: false,
     },
     birthDate: {
       type: Date,
-      required: [true, 'Birth date is required']
-    }
+      required: [true, 'Birth date is required'],
+    },
   },
   {
     // Automatically add `createdAt` and `updatedAt` timestamps.
-    timestamps: true
+    timestamps: true,
   }
-)
+);
 
 /**
  * In a serverless environment like Next.js, we need to check if the model
@@ -53,6 +50,6 @@ const userSchema: Schema<IUser> = new Schema(
  * If `mongoose.models.User` exists, we use it.
  * If not, we create it using `mongoose.model('User', userSchema)`.
  */
-const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema)
+const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 
-export default User
+export default User;

@@ -23,7 +23,7 @@ function SuccessMessage({ isLogin }: { isLogin: boolean }) {
       role="status"
       className="fixed left-1/2 top-8 w-full max-w-md -translate-x-1/2 animate-in slide-in-from-top-4"
       style={{
-        backgroundColor: "var(--mint-tulip)",
+        backgroundColor: 'var(--mint-tulip)',
         boxShadow: `0 10px 25px -5px var(--wistful) 40`,
       }}
     >
