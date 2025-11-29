@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import SidebarLayout from '@/app/components/navbar/SidebarLayout';
 import { getCurrentUser } from '@/app/actions/auth.actions';
-import SuccessMessage from "@/app/components/general/SuccessMessage";
+import SuccessMessage from '@/app/components/general/SuccessMessage';
 
 const CUSTOM_COLORS = {
   chantilly: '#f3b2dd',
@@ -36,16 +36,11 @@ export default async function Home({
     <SidebarLayout user={user}>
       <div className="min-h-screen p-8" style={{ backgroundColor: '#f8f9fa' }}>
         {/* Success Message - Client Component */}
-        {hasSuccess && (
-          <SuccessMessage isLogin={isLogin} />
-        )}
+        {hasSuccess && <SuccessMessage isLogin={isLogin} />}
 
         {/* Main Content */}
         <div className="mx-auto max-w-6xl">
-          <h1
-            className="mb-6 text-4xl font-bold"
-            style={{ color: CUSTOM_COLORS.wistful }}
-          >
+          <h1 className="mb-6 text-4xl font-bold" style={{ color: CUSTOM_COLORS.wistful }}>
             Welcome to AuraTrack
           </h1>
           <p className="mb-8 text-lg text-gray-600">
@@ -79,9 +74,7 @@ export default async function Home({
                   borderLeft: `4px solid ${card.color}`,
                 }}
               >
-                <h3 className="mb-2 text-xl font-semibold text-gray-800">
-                  {card.title}
-                </h3>
+                <h3 className="mb-2 text-xl font-semibold text-gray-800">{card.title}</h3>
                 <p className="text-gray-600">{card.description}</p>
               </div>
             ))}

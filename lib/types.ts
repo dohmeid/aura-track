@@ -3,3 +3,22 @@ export interface User {
   email: string;
   username: string;
 }
+
+export interface MoodEntry {
+  userId: string;
+  moodScore: number;
+  moodEmotion: string;
+  moodDescription: string;
+  moodTriggers: string[];
+  copingActions: string[];
+  activities: string[];
+  sleepHours: number;
+  energyLevel: number;
+  timestamp: Date;
+}
+
+export interface MoodFormState {
+  success: boolean;
+  message?: string;
+  errors?: Record<string, string>;
+}
