@@ -20,52 +20,59 @@ export async function saveMood(
       };
     }
 
-    // Parse numeric values safely
-    const moodScore = parseInt(formData.get('moodScore') as string);
-    const sleepHours = parseFloat(formData.get('sleepHours') as string) || 7;
-    const energyLevel = parseInt(formData.get('energyLevel') as string) || 50;
+    // --- Data Extraction & Parsing ---
+    
+    // Helper to safely parse numbers
+    const getNumber = (key: string, defaultVal: number) => {
+      const val = formData.get(key);
+      if (!val) return defaultVal;
+      const parsed = Number(val);
+      return isNaN(parsed) ? defaultVal : parsed;
+    };
 
-    // Parse text values
+    // Helper to parse comma-separated lists
+    const getArray = (key: string) => {
+      const val = formData.get(key);
+      if (!val || typeof val !== 'string') return [];
+      return val.split(',').filter((item) => item.trim().length > 0);
+    };
+
+    const moodScore = getNumber('moodScore', 0); // Default 0 to trigger validation
+    const sleepHours = getNumber('sleepHours', 7);
+    const energyLevel = getNumber('energyLevel', 50);
+    
     const emotion = formData.get('moodEmotion') as string;
     const description = formData.get('moodDescription') as string;
 
-    // Parse array values (comma separated strings from hidden inputs)
-    const parseArray = (key: string) =>
-      formData
-        .get(key)
-        ?.toString()
-        .split(',')
-        .filter((t) => t.trim().length > 0) || [];
+    const moodTriggers = getArray('moodTriggers');
+    const copingActions = getArray('copingActions');
+    const activities = getArray('activities');
 
-    const triggers = parseArray('moodTriggers');
-    const copingActions = parseArray('copingActions');
-    const activities = parseArray('activities');
+    // --- Validation Logic ---
 
-    // Validation
-    if (!moodScore || moodScore < 1 || moodScore > 10) {
-      console.log(moodScore);
-      console.log(formData.get('moodScore'));
+    if (moodScore < 1 || moodScore > 10) {
       return {
         success: false,
-        message: 'Mood score must be between 1 and 10.',
-        errors: { moodScore: 'Invalid mood score' },
+        message: 'Please select a valid mood score between 1 and 10.',
       };
     }
 
-    if (!emotion) {
+    if (!emotion || emotion.trim() === '') {
       return {
         success: false,
         message: 'Please select an emotion that best describes your state.',
-        errors: { emotion: 'Emotion is required' },
       };
     }
+
+    // --- Database Operation ---
 
     const moodEntry = new Mood({
       userId: user.userId,
       moodScore,
-      emotion,
-      description,
-      triggers,
+      emotion: emotion, // Mapped to 'emotion' in logic, but ensure model matches schema (moodEmotion in your model?)
+      moodEmotion: emotion, // Covering both bases based on your schema file
+      moodDescription: description,
+      moodTriggers,
       copingActions,
       activities,
       sleepHours,
@@ -75,20 +82,20 @@ export async function saveMood(
 
     await moodEntry.save();
 
-    // Revalidate pages that display mood data so they show the new entry immediately
-    revalidatePath('/history');
+    // Revalidate paths to update UI immediately
     revalidatePath('/home');
+    revalidatePath('/history');
     revalidatePath('/insights');
 
     return {
       success: true,
-      message: 'Your emotional aura has been recorded ✨',
+      message: 'Your mood has been logged successfully! ✨',
     };
   } catch (error) {
     console.error('Error saving mood:', error);
     return {
       success: false,
-      message: 'An error occurred while saving your mood. Please try again.',
+      message: 'Something went wrong. Please try again later.',
     };
   }
 }
