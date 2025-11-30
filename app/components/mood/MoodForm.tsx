@@ -142,17 +142,6 @@ export default function MoodForm() {
     if (state.message) {
       if (state.success) {
         setSnackState({ show: true, msg: state.message, type: 'success' });
-        // Reset values
-        setValues({
-          moodScore: 5,
-          moodEmotion: '',
-          moodDescription: '',
-          moodTriggers: [],
-          copingActions: [],
-          activities: [],
-          sleepHours: 7,
-          energyLevel: 50,
-        });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         setSnackState({ show: true, msg: state.message, type: 'error' });
