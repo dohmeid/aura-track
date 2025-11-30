@@ -18,7 +18,7 @@ export default function SnackBar({ message, type = 'success', isVisible, onClose
     if (isVisible) {
       const timer = setTimeout(() => {
         onClose();
-      }, 8000); // Increased duration to 8 seconds
+      }, 8000);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);
@@ -47,22 +47,22 @@ export default function SnackBar({ message, type = 'success', isVisible, onClose
   }
 
   return (
-    // Increased max-width to 3xl for a wider appearance
     <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-3xl px-4 pointer-events-none">
-      <div 
-        className={`pointer-events-auto flex items-center justify-between p-4 rounded-xl border-2 shadow-xl backdrop-blur-md animate-in slide-in-from-top-2 fade-in duration-300 ${bgStyle}`}
-      >
+      <div className={`pointer-events-auto flex items-center justify-between p-4 rounded-xl border-2 shadow-xl backdrop-blur-md animate-in slide-in-from-top-2 fade-in duration-300 ${bgStyle}`}>
+
         <div className="flex items-center gap-4">
           <Icon className={`w-6 h-6 shrink-0 ${iconColor}`} />
           <p className="font-medium text-base leading-relaxed">{message}</p>
         </div>
-        <button 
+
+        <button
           onClick={onClose}
           className="p-2 hover:bg-black/5 rounded-full transition-colors ml-4 shrink-0"
           aria-label="Close notification"
         >
           <X className="w-5 h-5 opacity-60" />
         </button>
+
       </div>
     </div>
   );
