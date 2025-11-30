@@ -5,7 +5,7 @@ import Mood from '@/lib/models/mood.model';
 import dbConnect from '@/lib/mongodb';
 import { MoodFormState } from '@/lib/types';
 
-export async function saveMood(
+export async function saveMood (
   prevState: MoodFormState,
   formData: FormData
 ): Promise<MoodFormState> {
@@ -108,5 +108,16 @@ export async function saveMood(
       success: false,
       message: 'Something went wrong. Please try again later.',
     };
+  }
+}
+
+export async function getMoodsForUser (userId: string) {
+  try {
+    await dbConnect();
+    const moods = await Mood.find({ userId }).sort({ timestamp: -1 });
+    return JSON.parse(JSON.stringify(moods));
+  } catch (error) {
+    console.error('Error fetching moods:', error);
+    return [];
   }
 }

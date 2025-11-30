@@ -1,67 +1,87 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/app/actions/auth.actions';
+import { getMoodsForUser } from '@/app/actions/mood.actions';
+import { calculateStreaks } from '@/lib/insights.utils';
+import { MoodEntry } from '@/lib/types';
 
-const CUSTOM_COLORS = {
-  chantilly: '#f3b2dd',
-  wistful: '#9fa1d2',
-  sidecar: '#f1e6ae',
-  blizzardBlue: '#a0dbe9',
-  mintTulip: '#c4f2e8',
-  ghost: '#cdced3',
-  clamShell: '#d0b4b3',
-};
+// Components
+import WelcomeHeader from '@/app/components/home/WelcomeHeader';
+import StatsCards from '@/app/components/home/StatsCards';
+import MoodOverview from '@/app/components/home/MoodOverview';
+import QuoteCard from '@/app/components/home/QuoteCard';
+import RecentHistory from '@/app/components/home/RecentHistory';
 
 export default async function Home() {
-  // Get user data server-side
   const user = await getCurrentUser();
-
-  // If not authenticated, redirect to login
   if (!user) {
     redirect('/login');
   }
 
-  return (
-    <div className="min-h-screen p-8" style={{ backgroundColor: '#f8f9fa' }}>
-      {/* Main Content */}
-      <div className="mx-auto max-w-6xl">
-        <h1 className="mb-6 text-4xl font-bold" style={{ color: CUSTOM_COLORS.wistful }}>
-          Welcome to AuraTrack
-        </h1>
-        <p className="mb-8 text-lg text-gray-600">
-          Start tracking your emotional aura and gain insights into your mood patterns.
-        </p>
+  const moods = await getMoodsForUser(user.userId);
 
-        {/* Quick Start Cards */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              title: 'Log Your Mood',
-              description: 'Record how you are feeling right now',
-              color: CUSTOM_COLORS.chantilly,
-            },
-            {
-              title: 'View History',
-              description: 'See your mood trends over time',
-              color: CUSTOM_COLORS.mintTulip,
-            },
-            {
-              title: 'Get Insights',
-              description: 'Understand your emotional patterns',
-              color: CUSTOM_COLORS.blizzardBlue,
-            },
-          ].map((card, idx) => (
-            <div
-              key={idx}
-              className="rounded-xl p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105"
-              style={{
-                backgroundColor: card.color + '30',
-                borderLeft: `4px solid ${card.color}`,
-              }}
-            >
-              <h3 className="mb-2 text-xl font-semibold text-gray-800">{card.title}</h3>
-              <p className="text-gray-600">{card.description}</p>
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayMood = moods.find((mood: MoodEntry) => {
+    const moodDate = new Date(mood.timestamp);
+    moodDate.setHours(0, 0, 0, 0);
+    return moodDate.getTime() === today.getTime();
+  });
+
+  const weeklyMoods = moods.filter((mood: MoodEntry) => {
+    const moodDate = new Date(mood.timestamp);
+    const lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - 7);
+    return moodDate > lastWeek;
+  });
+
+  const avgMood =
+    weeklyMoods.length > 0
+      ? weeklyMoods.reduce((acc: number, mood: MoodEntry) => acc + mood.moodScore, 0) /
+      weeklyMoods.length
+      : 0;
+
+  const avgSleep =
+    weeklyMoods.length > 0
+      ? weeklyMoods.reduce((acc: number, mood: MoodEntry) => acc + mood.sleepHours, 0) /
+      weeklyMoods.length
+      : 0;
+
+  const streak = calculateStreaks(moods);
+
+  return (
+    <div className="min-h-screen flex justify-center items-center">
+
+      <div className="relative z-8 flex flex-col h-full max-w-8xl mx-auto space-y-12">
+        {/* 1. Header Section */}
+        <div className="animate-in fade-in slide-in-from-top-4 duration-700">
+          <WelcomeHeader name={user.username || 'Friend'} />
+        </div>
+
+        {/* 2. Main Dashboard Grid (Bento Box Style) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 grid-rows-auto md:grid-rows-[minmax(300px,auto)_minmax(200px,auto)] gap-6 grow animate-in fade-in zoom-in-95 duration-1000 delay-100 fill-mode-backwards">
+
+          {/* Main Hero Card (Take up 7 columns) */}
+          <div className="md:col-span-7 lg:col-span-8 h-full min-h-[300px]">
+            <MoodOverview todayMood={todayMood} />
+          </div>
+
+          {/* Side Stack (Stats) (Take up 5 columns) */}
+          <div className="md:col-span-5 lg:col-span-4 flex flex-col gap-6 h-full min-h-[300px]">
+            <div className="flex-1">
+              <StatsCards avgMood={avgMood} avgSleep={avgSleep} streak={streak} />
             </div>
-          ))}
+          </div>
+
+          {/* Bottom Row */}
+          <div className="md:col-span-5 lg:col-span-4 h-full min-h-[200px]">
+            <QuoteCard />
+          </div>
+
+          <div className="md:col-span-7 lg:col-span-8 h-full min-h-[200px]">
+            <RecentHistory moods={moods} />
+          </div>
+
         </div>
       </div>
     </div>
