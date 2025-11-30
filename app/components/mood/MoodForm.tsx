@@ -5,7 +5,7 @@ import { Activity, Brain, Sparkles } from 'lucide-react';
 import { saveMood } from '@/app/actions/mood.actions';
 import SnackBar from '@/app/components/general/SnackBar';
 
-// constants 
+// constants
 const EMOTIONS = [
   { label: 'Joy', emoji: '🥰', value: 'joy' },
   { label: 'Excited', emoji: '🤩', value: 'excited' },
@@ -18,27 +18,76 @@ const EMOTIONS = [
   { label: 'Angry', emoji: '😠', value: 'angry' },
   { label: 'Overwhelmed', emoji: '🤯', value: 'overwhelmed' },
 ];
-const SUGGESTED_TRIGGERS = ['Work', 'Family', 'Sleep', 'Weather', 'Health', 'Money'];
-const SUGGESTED_COPING = ['Music', 'Walk', 'Nap', 'Reading', 'Meditation'];
-const SUGGESTED_ACTIVITIES = ['Work', 'Exercise', 'Socializing', 'Gaming', 'Reading'];
+const SUGGESTED_TRIGGERS = [
+  'Work Stress',
+  'Family',
+  'School pressure',
+  'Weather',
+  'Routine',
+  'Loneliness',
+  'Relationship issue',
+  'Health',
+  'Money',
+];
+const SUGGESTED_COPING = [
+  'Listened to Music',
+  'Walked',
+  'Nap',
+  'Talked to someone',
+  'Reading',
+  'Meditation',
+  'Cried',
+  'Nothing',
+];
+const SUGGESTED_ACTIVITIES = [
+  'Studying',
+  'Socializing',
+  'Working',
+  'Exercising',
+  'Chilling',
+  'Sleeping',
+  'Eating',
+  'On social media',
+  'Family time',
+];
 
 // helper components
-const Chip = ({ children, active, onClick }: { children: React.ReactNode; active?: boolean; onClick?: () => void }) => (
+const Chip = ({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) => (
   <button
     type="button"
     onClick={onClick}
     className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out transform
-      ${active
-        ? 'bg-dark-yelow text-white shadow-md scale-105'
-        : 'bg-white/50 text-gray-600 border border-wistful/20 hover:bg-mint-tulip/30 hover:border-wistful/50'
+      ${
+        active
+          ? 'bg-dark-yelow text-white shadow-md scale-105'
+          : 'bg-white/50 text-gray-600 border border-wistful/20 hover:bg-mint-tulip/30 hover:border-wistful/50'
       }a`}
   >
     {children}
   </button>
 );
 
-const RangeSlider = ({ value, min, max, onChange, colorClass }:
-  { value: number, min: number, max: number, onChange: (val: number) => void, colorClass: string }) => (
+const RangeSlider = ({
+  value,
+  min,
+  max,
+  onChange,
+  colorClass,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  onChange: (val: number) => void;
+  colorClass: string;
+}) => (
   <div className="relative w-full h-6 flex items-center">
     <input
       type="range"
@@ -48,14 +97,14 @@ const RangeSlider = ({ value, min, max, onChange, colorClass }:
       onChange={(e) => onChange(Number(e.target.value))}
       className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200 z-10"
       style={{
-        background: `linear-gradient(to right, var(--${colorClass}) 0%, var(--${colorClass}) ${(value - min) / (max - min) * 100}%, #e5e7eb ${(value - min) / (max - min) * 100}%, #e5e7eb 100%)`
+        background: `linear-gradient(to right, var(--${colorClass}) 0%, var(--${colorClass}) ${((value - min) / (max - min)) * 100}%, #e5e7eb ${((value - min) / (max - min)) * 100}%, #e5e7eb 100%)`,
       }}
     />
     <div
       className="absolute h-4 w-4 bg-white border-2 rounded-full shadow-md pointer-events-none transition-all duration-200 z-20"
       style={{
         left: `calc(${((value - min) / (max - min)) * 100}% - 8px)`,
-        borderColor: `var(--${colorClass})`
+        borderColor: `var(--${colorClass})`,
       }}
     />
   </div>
@@ -67,8 +116,14 @@ export default function MoodForm() {
   const { pending } = useFormStatus();
 
   // Local state for UI feedback (Snackbar)
-  const [snackState, setSnackState] = useState<{ show: boolean, msg: string, type: 'success' | 'error' }>({
-    show: false, msg: '', type: 'success'
+  const [snackState, setSnackState] = useState<{
+    show: boolean;
+    msg: string;
+    type: 'success' | 'error';
+  }>({
+    show: false,
+    msg: '',
+    type: 'success',
   });
 
   const [values, setValues] = useState({
@@ -105,15 +160,18 @@ export default function MoodForm() {
     }
   }, [state]);
 
-  const toggleArrayItem = useCallback((key: 'moodTriggers' | 'copingActions' | 'activities', item: string) => {
-    setValues(prev => {
-      const arr = prev[key];
-      return {
-        ...prev,
-        [key]: arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item]
-      };
-    });
-  }, []);
+  const toggleArrayItem = useCallback(
+    (key: 'moodTriggers' | 'copingActions' | 'activities', item: string) => {
+      setValues((prev) => {
+        const arr = prev[key];
+        return {
+          ...prev,
+          [key]: arr.includes(item) ? arr.filter((i) => i !== item) : [...arr, item],
+        };
+      });
+    },
+    []
+  );
 
   const isValid = values.moodEmotion !== '';
 
@@ -123,27 +181,34 @@ export default function MoodForm() {
         isVisible={snackState.show}
         message={snackState.msg}
         type={snackState.type}
-        onClose={() => setSnackState(prev => ({ ...prev, show: false }))}
+        onClose={() => setSnackState((prev) => ({ ...prev, show: false }))}
       />
 
       <form action={formAction} className="space-y-6 pb-20">
-
         {/* Card 1: Main Mood */}
         <div className="bg-white/80 backdrop-blur-md rounded-[30px] p-8 shadow-sm border border-white/50">
-
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-chantilly/20 rounded-xl text-wistful"><Sparkles size={24} /></div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-chantilly/20 rounded-xl text-wistful">
+              <Sparkles size={24} />
+            </div>
             <h2 className="text-xl font-bold text-gray-700">How do you feel?</h2>
           </div>
 
           <div className="p-8">
             <div className="flex justify-between items-end mb-4">
-              <label className="text-sm font-semibold text-gray-500  uppercase tracking-wide">Mood Score</label>
-              <span className="text-2xl font-bold text-wistful">{values.moodScore}<span className="text-sm text-gray-400 font-normal">/10</span></span>
+              <label className="text-sm font-semibold text-gray-500  uppercase tracking-wide">
+                Mood Score
+              </label>
+              <span className="text-2xl font-bold text-wistful">
+                {values.moodScore}
+                <span className="text-sm text-gray-400 font-normal">/10</span>
+              </span>
             </div>
             <RangeSlider
-              min={1} max={10} value={values.moodScore}
-              onChange={(val) => setValues(v => ({ ...v, moodScore: val }))}
+              min={1}
+              max={10}
+              value={values.moodScore}
+              onChange={(val) => setValues((v) => ({ ...v, moodScore: val }))}
               colorClass="wistful"
             />
             <div className="flex justify-between text-xs text-gray-400 mt-1">
@@ -154,18 +219,22 @@ export default function MoodForm() {
           </div>
 
           <div className="p-8">
-            <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Emotion</label>
+            <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">
+              Emotion
+            </label>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               {EMOTIONS.map((e) => (
                 <button
                   key={e.value}
                   type="button"
-                  onClick={() => setValues(v => ({ ...v, moodEmotion: e.value }))}
+                  onClick={() => setValues((v) => ({ ...v, moodEmotion: e.value }))}
                   className={`
                     flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-200
-                    ${values.moodEmotion === e.value
-                      ? 'border-wistful bg-wistful/10 text-wistful transform scale-105'
-                      : 'border-transparent bg-gray-50 hover:bg-gray-100 text-gray-500 hover:scale-105'}
+                    ${
+                      values.moodEmotion === e.value
+                        ? 'border-wistful bg-wistful/10 text-wistful transform scale-105'
+                        : 'border-transparent bg-gray-50 hover:bg-gray-100 text-gray-500 hover:scale-105'
+                    }
                   `}
                 >
                   <span className="text-2xl mb-1 filter drop-shadow-sm">{e.emoji}</span>
@@ -178,20 +247,30 @@ export default function MoodForm() {
 
         {/* Card 2: Mood Context */}
         <div className="bg-white/70 backdrop-blur-md rounded-[30px] p-8 shadow-sm border border-white/40">
-
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-sidecar/30 rounded-xl text-dark-yelow"><Brain size={24} /></div>
+            <div className="p-2 bg-sidecar/30 rounded-xl text-dark-yelow">
+              <Brain size={24} />
+            </div>
             <h2 className="text-xl font-bold text-gray-700">Context</h2>
           </div>
 
           <div className="p-8 space-y-8">
             {/* Triggers */}
             <div>
-              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Triggers</label>
+              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">
+                Triggers
+                <span className="text-xs text-gray-400 font-light lowercase">
+                  {' '}
+                  - What affected your mood today?
+                </span>
+              </label>
               <div className="flex flex-wrap gap-3">
-                {SUGGESTED_TRIGGERS.map(t => (
-                  <Chip key={t} active={values.moodTriggers.includes(t)}
-                    onClick={() => toggleArrayItem('moodTriggers', t)}>
+                {SUGGESTED_TRIGGERS.map((t) => (
+                  <Chip
+                    key={t}
+                    active={values.moodTriggers.includes(t)}
+                    onClick={() => toggleArrayItem('moodTriggers', t)}
+                  >
                     {t}
                   </Chip>
                 ))}
@@ -201,10 +280,21 @@ export default function MoodForm() {
 
             {/* Coping Mechanisms */}
             <div>
-              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Coping Mechanisms</label>
+              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">
+                Coping Mechanisms
+                <span className="text-xs text-gray-400 font-light lowercase">
+                  {' '}
+                  - What did you do to improve your mood?
+                </span>
+              </label>
+
               <div className="flex flex-wrap gap-3">
-                {SUGGESTED_COPING.map(c => (
-                  <Chip key={c} active={values.copingActions.includes(c)} onClick={() => toggleArrayItem('copingActions', c)}>
+                {SUGGESTED_COPING.map((c) => (
+                  <Chip
+                    key={c}
+                    active={values.copingActions.includes(c)}
+                    onClick={() => toggleArrayItem('copingActions', c)}
+                  >
                     {c}
                   </Chip>
                 ))}
@@ -213,11 +303,17 @@ export default function MoodForm() {
             <div className="h-px bg-gray-400/50"></div>
 
             {/* Activities */}
-            <div >
-              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Activities</label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">
+                Activities
+              </label>
               <div className="flex flex-wrap gap-3">
-                {SUGGESTED_ACTIVITIES.map(a => (
-                  <Chip key={a} active={values.activities.includes(a)} onClick={() => toggleArrayItem('activities', a)}>
+                {SUGGESTED_ACTIVITIES.map((a) => (
+                  <Chip
+                    key={a}
+                    active={values.activities.includes(a)}
+                    onClick={() => toggleArrayItem('activities', a)}
+                  >
                     {a}
                   </Chip>
                 ))}
@@ -227,10 +323,12 @@ export default function MoodForm() {
 
             {/* Notes */}
             <div>
-              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Notes</label>
+              <label className="block text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">
+                Notes
+              </label>
               <textarea
                 value={values.moodDescription}
-                onChange={(e) => setValues(v => ({ ...v, moodDescription: e.target.value }))}
+                onChange={(e) => setValues((v) => ({ ...v, moodDescription: e.target.value }))}
                 placeholder="What's on your mind?..."
                 className="w-full p-4 text-dark-yelow bg-gray-50/80 rounded-xl border border-gray-200 focus:border-wistful focus:ring-2 focus:ring-wistful/40 transition-all text-sm h-32 resize-none shadow-sm"
               />
@@ -238,12 +336,12 @@ export default function MoodForm() {
           </div>
         </div>
 
-
         {/* Card 3: Sleep & Energy */}
         <div className="bg-white/80 backdrop-blur-md rounded-[30px] p-8 shadow-sm border border-white/50 relative overflow-hidden">
-
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-mint-tulip/30 rounded-xl text-ethereal-blue"><Activity size={24} /></div>
+            <div className="p-2 bg-mint-tulip/30 rounded-xl text-ethereal-blue">
+              <Activity size={24} />
+            </div>
             <h2 className="text-xl font-bold text-gray-700">Physical State</h2>
           </div>
 
@@ -254,9 +352,12 @@ export default function MoodForm() {
 
               <div className="flex items-center gap-3 ">
                 <input
-                  type="number" min={0} max={24} step={0.5}
+                  type="number"
+                  min={0}
+                  max={24}
+                  step={0.5}
                   value={values.sleepHours}
-                  onChange={(e) => setValues(v => ({ ...v, sleepHours: Number(e.target.value) }))}
+                  onChange={(e) => setValues((v) => ({ ...v, sleepHours: Number(e.target.value) }))}
                   className="w-25 text-center text-mint-tulip font-bold text-xl p-2 rounded-xl bg-gray-50  border-2
                    focus:ring-2 focus:ring-wistful/50"
                 />
@@ -274,12 +375,11 @@ export default function MoodForm() {
                 min={0}
                 max={100}
                 value={values.energyLevel}
-                onChange={(val) => setValues(v => ({ ...v, energyLevel: val }))}
+                onChange={(val) => setValues((v) => ({ ...v, energyLevel: val }))}
                 colorClass="mint-tulip"
               />
             </div>
           </div>
-
         </div>
 
         {/* Hidden Inputs for Form Submission */}
@@ -298,13 +398,14 @@ export default function MoodForm() {
           disabled={!isValid || pending}
           className={`
             w-full py-4 rounded-2xl font-bold text-white text-lg tracking-wide uppercase shadow-lg transition-all duration-300
-            ${!isValid || pending
-              ? 'bg-gray-300 cursor-not-allowed shadow-none'
-              : 'bg-wistful hover:bg-chantilly hover:shadow-xl hover:-translate-y-1 active:translate-y-0'
-            }`}>
+            ${
+              !isValid || pending
+                ? 'bg-gray-300 cursor-not-allowed shadow-none'
+                : 'bg-wistful hover:bg-chantilly hover:shadow-xl hover:-translate-y-1 active:translate-y-0'
+            }`}
+        >
           {pending ? 'Saving Aura...' : 'Log Mood'}
         </button>
-
       </form>
     </>
   );

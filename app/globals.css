@@ -46,7 +46,13 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    'Poppins',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    sans-serif;
 }
 
 /* Smooth scrolling */
@@ -78,10 +84,14 @@ button:disabled {
 @keyframes etherealGlow {
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(212, 165, 212, 0.2), 0 0 40px rgba(196, 242, 232, 0.1);
+    box-shadow:
+      0 0 20px rgba(212, 165, 212, 0.2),
+      0 0 40px rgba(196, 242, 232, 0.1);
   }
   50% {
-    box-shadow: 0 0 30px rgba(212, 165, 212, 0.4), 0 0 60px rgba(196, 242, 232, 0.2);
+    box-shadow:
+      0 0 30px rgba(212, 165, 212, 0.4),
+      0 0 60px rgba(196, 242, 232, 0.2);
   }
 }
 
@@ -94,13 +104,16 @@ button:disabled {
 .hover-lift {
   position: relative;
   will-change: transform, box-shadow;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hover-lift:hover {
   transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(212, 165, 212, 0.15), 0 15px 30px rgba(134, 186, 218, 0.1);
+  box-shadow:
+    0 25px 50px rgba(212, 165, 212, 0.15),
+    0 15px 30px rgba(134, 186, 218, 0.1);
 }
 
 /* Radiant border for cards on hover */

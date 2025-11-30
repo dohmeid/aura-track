@@ -128,7 +128,11 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
   const [state, dispatch] = useFormState(formAction, initialState);
 
   // Local state for SnackBar
-  const [snackState, setSnackState] = useState<{ show: boolean; msg: string; type: 'success' | 'error' }>({
+  const [snackState, setSnackState] = useState<{
+    show: boolean;
+    msg: string;
+    type: 'success' | 'error';
+  }>({
     show: false,
     msg: '',
     type: 'success',
@@ -145,14 +149,15 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const redirectUrl = searchParams.get('redirect_url') || `/home?success=${isLogin ? 'login' : 'signup'}`;
+  const redirectUrl =
+    searchParams.get('redirect_url') || `/home?success=${isLogin ? 'login' : 'signup'}`;
   const urlMessage = searchParams.get('message');
   const initialEmail = searchParams.get('email');
 
   // Handle URL messages (e.g. from Middleware redirect) on mount
   useEffect(() => {
     if (initialEmail) {
-      setFormValues(prev => ({ ...prev, email: initialEmail }));
+      setFormValues((prev) => ({ ...prev, email: initialEmail }));
     }
 
     if (urlMessage) {
@@ -179,7 +184,10 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
       });
 
       // Handle redirect if successful
-      if (state.success && (state.message.includes('successful') || state.message.includes('Redirecting'))) {
+      if (
+        state.success &&
+        (state.message.includes('successful') || state.message.includes('Redirecting'))
+      ) {
         const timer = setTimeout(() => {
           router.push(redirectUrl);
         }, 1500);
@@ -203,13 +211,12 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[radial-gradient(circle_at_top_left,var(--blizzard-blue),var(--mint-tulip)_30%,var(--sidecar)_60%,#fff_100%)]">
-
       {/* Global SnackBar for Auth Feedback */}
       <SnackBar
         isVisible={snackState.show}
         message={snackState.msg}
         type={snackState.type}
-        onClose={() => setSnackState(prev => ({ ...prev, show: false }))}
+        onClose={() => setSnackState((prev) => ({ ...prev, show: false }))}
       />
 
       <div className="max-w-md w-full p-8 sm:p-10 bg-white/90 backdrop-blur-sm rounded-[30px] transition-all duration-500 ease-in-out shadow-[0_15px_30px_-10px_--theme(--color-wistful/0.6),0_5px_15px_-5px_--theme(--color-chantilly/0.66)]">

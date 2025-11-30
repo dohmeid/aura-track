@@ -21,7 +21,7 @@ export async function saveMood(
     }
 
     // --- Data Extraction & Parsing ---
-    
+
     // Helper to safely parse numbers
     const getNumber = (key: string, defaultVal: number) => {
       const val = formData.get(key);
@@ -40,7 +40,7 @@ export async function saveMood(
     const moodScore = getNumber('moodScore', 0); // Default 0 to trigger validation
     const sleepHours = getNumber('sleepHours', 7);
     const energyLevel = getNumber('energyLevel', 50);
-    
+
     const emotion = formData.get('moodEmotion') as string;
     const description = formData.get('moodDescription') as string;
 
@@ -49,7 +49,6 @@ export async function saveMood(
     const activities = getArray('activities');
 
     // --- Validation Logic ---
-
     if (moodScore < 1 || moodScore > 10) {
       return {
         success: false,
@@ -65,22 +64,34 @@ export async function saveMood(
     }
 
     // --- Database Operation ---
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
 
-    const moodEntry = new Mood({
-      userId: user.userId,
-      moodScore,
-      emotion: emotion, // Mapped to 'emotion' in logic, but ensure model matches schema (moodEmotion in your model?)
-      moodEmotion: emotion, // Covering both bases based on your schema file
-      moodDescription: description,
-      moodTriggers,
-      copingActions,
-      activities,
-      sleepHours,
-      energyLevel,
-      timestamp: new Date(),
-    });
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
 
-    await moodEntry.save();
+    await Mood.findOneAndUpdate(
+      {
+        userId: user.userId,
+        timestamp: {
+          $gte: startOfDay,
+          $lt: endOfDay,
+        },
+      },
+      {
+        moodScore,
+        emotion: emotion,
+        moodEmotion: emotion,
+        moodDescription: description,
+        moodTriggers,
+        copingActions,
+        activities,
+        sleepHours,
+        energyLevel,
+        timestamp: new Date(),
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     // Revalidate paths to update UI immediately
     revalidatePath('/home');
