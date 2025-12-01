@@ -111,10 +111,43 @@ export async function saveMood (
   }
 }
 
-export async function getMoodsForUser (userId: string) {
+export async function getMoodsForUser ({
+  userId,
+  filter = 'all',
+  sort = 'newest',
+}: {
+  userId: string;
+  filter?: string;
+  sort?: string;
+}) {
   try {
     await dbConnect();
-    const moods = await Mood.find({ userId }).sort({ timestamp: -1 });
+
+    const query: any = { userId };
+    const now = new Date();
+    let startDate;
+
+    switch (filter) {
+      case 'week':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        break;
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        break;
+      case 'year':
+        startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        break;
+      default:
+        break;
+    }
+
+    if (startDate) {
+      query.timestamp = { $gte: startDate };
+    }
+
+    const sortOrder = sort === 'newest' ? -1 : 1;
+
+    const moods = await Mood.find(query).sort({ timestamp: sortOrder });
     return JSON.parse(JSON.stringify(moods));
   } catch (error) {
     console.error('Error fetching moods:', error);

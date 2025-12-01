@@ -4,7 +4,8 @@ export interface User {
   username: string;
 }
 
-export interface MoodEntry {
+export interface Mood {
+  _id: string;
   userId: string;
   moodScore: number;
   moodEmotion: string;

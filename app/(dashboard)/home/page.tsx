@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/app/actions/auth.actions';
 import { getMoodsForUser } from '@/app/actions/mood.actions';
 import { calculateStreaks } from '@/lib/insights.utils';
-import { MoodEntry } from '@/lib/types';
+import { Mood } from '@/lib/types';
 
 // Components
 import WelcomeHeader from '@/app/components/home/WelcomeHeader';
@@ -17,18 +17,18 @@ export default async function Home() {
     redirect('/login');
   }
 
-  const moods = await getMoodsForUser(user.userId);
+  const moods = await getMoodsForUser({userId: user.userId});
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayMood = moods.find((mood: MoodEntry) => {
+  const todayMood = moods.find((mood: Mood) => {
     const moodDate = new Date(mood.timestamp);
     moodDate.setHours(0, 0, 0, 0);
     return moodDate.getTime() === today.getTime();
   });
 
-  const weeklyMoods = moods.filter((mood: MoodEntry) => {
+  const weeklyMoods = moods.filter((mood: Mood) => {
     const moodDate = new Date(mood.timestamp);
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
@@ -37,13 +37,13 @@ export default async function Home() {
 
   const avgMood =
     weeklyMoods.length > 0
-      ? weeklyMoods.reduce((acc: number, mood: MoodEntry) => acc + mood.moodScore, 0) /
+      ? weeklyMoods.reduce((acc: number, mood: Mood) => acc + mood.moodScore, 0) /
       weeklyMoods.length
       : 0;
 
   const avgSleep =
     weeklyMoods.length > 0
-      ? weeklyMoods.reduce((acc: number, mood: MoodEntry) => acc + mood.sleepHours, 0) /
+      ? weeklyMoods.reduce((acc: number, mood: Mood) => acc + mood.sleepHours, 0) /
       weeklyMoods.length
       : 0;
 
