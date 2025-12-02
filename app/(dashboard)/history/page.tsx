@@ -1,13 +1,12 @@
-import React from 'react';
 import { Metadata } from 'next';
 import { RedirectType, redirect } from 'next/navigation';
+import { Inbox } from 'lucide-react';
 import FilterSortControls from '@/app/components/history/FilterSortControls';
 import CalendarHeatmap from '@/app/components/history/CalendarHeatmap';
 import MoodEntryCard from '@/app/components/history/MoodEntryCard';
 import { getMoodsForUser } from '@/app/actions/mood.actions';
 import { getCurrentUser } from '@/app/actions/auth.actions';
 import { Mood } from '@/lib/types';
-import { Inbox, Frown } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'History | AuraTrack',
@@ -31,10 +30,10 @@ const HistoryPage = async (props: HistoryPageProps) => {
   const filterBy = params?.filterBy || 'all';
   const sort = params?.sort || 'newest';
 
-  const moods: Mood[] = await getMoodsForUser({ 
-    userId: user.userId, 
-    filter: filterBy, 
-    sort 
+  const moods: Mood[] = await getMoodsForUser({
+    userId: user.userId,
+    filter: filterBy,
+    sort
   });
 
   return (
@@ -49,7 +48,7 @@ const HistoryPage = async (props: HistoryPageProps) => {
       </header>
 
       {/* Top Section: Heatmap & Controls */}
-      <section 
+      <section
         className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in zoom-in-95 duration-1000 delay-100 fill-mode-backwards"
         aria-label="Mood Visualization and Controls"
       >
@@ -57,7 +56,7 @@ const HistoryPage = async (props: HistoryPageProps) => {
         <div className="lg:col-span-2">
           <CalendarHeatmap moods={moods} />
         </div>
-        
+
         {/* Controls take up 1 column */}
         <div className="h-full">
           <FilterSortControls activeFilter={filterBy} activeSort={sort} />
@@ -65,7 +64,7 @@ const HistoryPage = async (props: HistoryPageProps) => {
       </section>
 
       {/* List Section */}
-      <section 
+      <section
         className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-backwards"
         aria-label="Mood Entries List"
       >
@@ -91,8 +90,8 @@ const HistoryPage = async (props: HistoryPageProps) => {
             </div>
             <h3 className="text-lg font-semibold text-gray-600">No moods found</h3>
             <p className="text-gray-500 max-w-sm mx-auto mt-2">
-              {filterBy !== 'all' 
-                ? "Try changing your filters to see more entries." 
+              {filterBy !== 'all'
+                ? "Try changing your filters to see more entries."
                 : "You haven't logged any moods yet. Go to the dashboard to check in!"}
             </p>
           </div>
