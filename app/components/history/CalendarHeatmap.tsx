@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import { Mood } from '@/lib/types';
 import { cn } from '@/lib/insights.utils';
+import { toLocalISODate } from '@/lib/timezone.utils';
 
 interface CalendarHeatmapProps {
   moods: Mood[];
@@ -20,7 +21,7 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
   // using a map for O(1) lookups
   const moodMap = useMemo(() => {
     return moods.reduce((acc, mood) => {
-      const date = new Date(mood.timestamp).toISOString().split('T')[0];       // normalize date to YYYY-MM-DD
+      const date = toLocalISODate(new Date(mood.timestamp));       // normalize date to YYYY-MM-DD using local timezone
       acc[date] = mood.moodScore;
       return acc;
     }, {} as Record<string, number>);
@@ -59,7 +60,7 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
         lastMonth = currentMonth;
       }
 
-      const dateString = currentDate.toISOString().split('T')[0];
+      const dateString = toLocalISODate(currentDate);
       const isWithinYear = currentDate.getFullYear() === today.getFullYear();
 
       currentWeek.push({

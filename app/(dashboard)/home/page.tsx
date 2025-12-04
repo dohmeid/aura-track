@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/app/actions/auth.actions';
 import { getMoodsForUser } from '@/app/actions/mood.actions';
 import { calculateStreaks } from '@/lib/insights.utils';
+import { isSameLocalDay } from '@/lib/timezone.utils';
 import { Mood } from '@/lib/types';
 
 // Components
@@ -20,12 +21,9 @@ export default async function Home() {
   const moods = await getMoodsForUser({userId: user.userId});
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
   const todayMood = moods.find((mood: Mood) => {
-    const moodDate = new Date(mood.timestamp);
-    moodDate.setHours(0, 0, 0, 0);
-    return moodDate.getTime() === today.getTime();
+    return isSameLocalDay(new Date(mood.timestamp), today);
   });
 
   const weeklyMoods = moods.filter((mood: Mood) => {

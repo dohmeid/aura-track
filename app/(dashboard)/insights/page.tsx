@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Sparkles, Moon, Battery, Zap, TrendingUp, Calendar, Info } from 'lucide-react';
+import { Sparkles, Moon, Zap, TrendingUp, Calendar, Info } from 'lucide-react';
 import LineChart from '@/app/components/insights/LineChart';
 import BarChart from '@/app/components/insights/BarChart';
 import DistributionChart from '@/app/components/insights/DistributionChart';

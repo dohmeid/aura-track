@@ -3,6 +3,7 @@ import Mood from '@/lib/models/mood.model';
 import { verifyTokenServer } from '@/lib/auth.utils';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { toLocalISODate } from '@/lib/timezone.utils';
 
 function startOfDay(d: Date) {
   const n = new Date(d);
@@ -11,7 +12,7 @@ function startOfDay(d: Date) {
 }
 
 function isoDate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  return toLocalISODate(d);
 }
 
 function pearson(xs: number[], ys: number[]) {

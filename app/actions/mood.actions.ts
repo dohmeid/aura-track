@@ -4,6 +4,7 @@ import { getCurrentUser } from './auth.actions';
 import Mood from '@/lib/models/mood.model';
 import dbConnect from '@/lib/mongodb';
 import { MoodFormState } from '@/lib/types';
+import { getLocalStartOfDay, getLocalEndOfDay } from '@/lib/timezone.utils';
 
 export async function saveMood (
   prevState: MoodFormState,
@@ -64,18 +65,15 @@ export async function saveMood (
     }
 
     // --- Database Operation ---
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
+    const startOfDay = getLocalStartOfDay();
+    const endOfDay = getLocalEndOfDay();
 
     await Mood.findOneAndUpdate(
       {
         userId: user.userId,
         timestamp: {
           $gte: startOfDay,
-          $lt: endOfDay,
+          $lte: endOfDay,
         },
       },
       {
