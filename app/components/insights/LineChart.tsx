@@ -26,9 +26,11 @@ interface Props {
   data: Point[];
   height?: number;
   color?: string; // Allow overriding color
+  maxY?: number; // Allow overriding max Y value
+  showAllLabels?: boolean; // Show all x-axis labels
 }
 
-export default function LineChart({ data, height = 200, color = '#9fa1d2' }: Props) {
+export default function LineChart({ data, height = 200, color = '#9fa1d2', maxY = 10, showAllLabels = false }: Props) {
   if (!data || data.length === 0) return <div className="h-full flex items-center justify-center text-sm text-gray-400 italic">No data available for this range</div>;
 
   const labels = data.map((d) => {
@@ -97,8 +99,8 @@ export default function LineChart({ data, height = 200, color = '#9fa1d2' }: Pro
         grid: { display: false }, 
         ticks: { 
             maxRotation: 0, 
-            autoSkip: true, 
-            maxTicksLimit: 7,
+            autoSkip: !showAllLabels,
+            maxTicksLimit: showAllLabels ? data.length : 7,
             color: '#9ca3af',
             font: { size: 10 }
         } 
@@ -106,9 +108,9 @@ export default function LineChart({ data, height = 200, color = '#9fa1d2' }: Pro
       y: {
         grid: { color: 'rgba(0,0,0,0.04)', borderDash: [5, 5] },
         beginAtZero: true,
-        max: 10, // Assuming 10 is max for mood/energy
+        max: maxY,
         ticks: {
-          stepSize: 2,
+          stepSize: maxY / 5,
           color: '#9ca3af',
           font: { size: 10 },
           callback: function (value: any) {

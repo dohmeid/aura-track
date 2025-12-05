@@ -97,6 +97,60 @@ export default function InsightsPage() {
     // Helper for trend direction (simplified)
     const moodTrend = avgMoodWeek >= avgMoodAll ? 'Improving' : 'Declining';
 
+    // --- Derived Insights (computed client-side) ---
+    const sleepEnergyCorr = React.useMemo(() => {
+        try {
+            const sleepMap = new Map(sleepSeries.filter(s => typeof s.y === 'number').map(s => [String(s.x), s.y as number]));
+            const pairs: [number, number][] = [];
+            for (const e of energySeries) {
+                if (typeof e.y === 'number') {
+                    const s = sleepMap.get(String(e.x));
+                    if (typeof s === 'number') pairs.push([s, e.y as number]);
+                }
+            }
+            if (pairs.length < 2) return null;
+            const n = pairs.length;
+            const meanX = pairs.reduce((sum, p) => sum + p[0], 0) / n;
+            const meanY = pairs.reduce((sum, p) => sum + p[1], 0) / n;
+            let num = 0, denX = 0, denY = 0;
+            for (const [x, y] of pairs) {
+                const dx = x - meanX;
+                const dy = y - meanY;
+                num += dx * dy;
+                denX += dx * dx;
+                denY += dy * dy;
+            }
+            const denom = Math.sqrt(denX * denY);
+            if (denom === 0) return 0;
+            return +(num / denom).toFixed(2);
+        } catch (err) {
+            return null;
+        }
+    }, [sleepSeries, energySeries]);
+
+    const bestMoodWeekday = React.useMemo(() => {
+        try {
+            const valid = moodSeries.filter(m => typeof m.y === 'number');
+            if (!valid.length) return null;
+            const best = valid.reduce((a, b) => ( (b.y as number) > (a.y as number) ? b : a ));
+            const date = new Date(String(best.x));
+            const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            return weekdays[date.getDay()];
+        } catch (err) {
+            return null;
+        }
+    }, [moodSeries]);
+
+    const consistencyPct = React.useMemo(() => {
+        try {
+            const set = new Set<string>();
+            const addDates = (arr: { x: any; y: any }[]) => arr.forEach(it => { if (it.y !== null && it.y !== undefined) set.add(String(it.x)); });
+            addDates(moodSeries); addDates(sleepSeries); addDates(energySeries);
+            if (!days) return 0;
+            const pct = Math.min(100, Math.round((set.size / days) * 100));
+            return pct;
+        } catch (err) { return 0; }
+    }, [moodSeries, sleepSeries, energySeries, days]);
     if (loading) {
         return (
             <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
@@ -231,12 +285,12 @@ export default function InsightsPage() {
                     <h2 className="text-lg font-bold text-gray-700 mb-1">Energy Levels</h2>
                     <p className="text-sm text-gray-400 mb-6">Daily reported energy %</p>
                     <div className="h-[220px]">
-                        <LineChart data={energySeries as any} height={220} color="#f1e6ae" />
+                        <LineChart data={energySeries.filter((d) => d.y !== null) as any} height={220} color="#fbbf24" maxY={100} showAllLabels={true} />
                     </div>
                 </div>
             </div>
 
-            {/* --- Smart Correlations --- */}
+            {/* --- Smart Correlations / Actionable Insights --- */}
             <section className="bg-white/40 backdrop-blur-sm rounded-[30px] p-6 border border-white/40 animate-in fade-in slide-in-from-bottom-8 delay-700 fill-mode-backwards">
                 <div className="flex items-center gap-2 mb-4">
                     <Info className="w-5 h-5 text-wistful" />
@@ -244,29 +298,41 @@ export default function InsightsPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-4 bg-white/50 rounded-2xl border border-white/50">
-                        <h4 className="text-sm font-semibold text-gray-500 uppercase">Sleep Correlation</h4>
+                        <h4 className="text-sm font-semibold text-gray-500 uppercase">Sleep ↔ Energy</h4>
                         <p className="text-gray-800 font-medium mt-1">
-                            {correlation?.sleepMood > 0.3
-                                ? "Strong connection: More sleep clearly boosts your mood."
-                                : correlation?.sleepMood < -0.3
-                                    ? "Unusual: More sleep seems to lower your mood?"
-                                    : "No strong link between sleep duration and mood recently."}
+                            {sleepEnergyCorr === null && 'Not enough data to determine a relationship.'}
+                            {typeof sleepEnergyCorr === 'number' && (
+                                <>
+                                    {Math.abs(sleepEnergyCorr) >= 0.5 ? (
+                                        <span>Strong {sleepEnergyCorr > 0 ? 'positive' : 'negative'} relationship ({sleepEnergyCorr}).</span>
+                                    ) : Math.abs(sleepEnergyCorr) >= 0.3 ? (
+                                        <span>Moderate {sleepEnergyCorr > 0 ? 'positive' : 'negative'} relationship ({sleepEnergyCorr}).</span>
+                                    ) : (
+                                        <span>No clear linear relationship ({sleepEnergyCorr}).</span>
+                                    )}
+                                </>
+                            )}
                         </p>
                     </div>
                     <div className="p-4 bg-white/50 rounded-2xl border border-white/50">
-                        <h4 className="text-sm font-semibold text-gray-500 uppercase">Current Streak</h4>
+                        <h4 className="text-sm font-semibold text-gray-500 uppercase">Best Day</h4>
                         <p className="text-gray-800 font-medium mt-1">
-                            Consistency is key. You have logged data for <span className="text-wistful font-bold">{days} days</span> in this view.
+                            {bestMoodWeekday ? (
+                                <span>Your highest mood typically occurs on <span className="font-bold">{bestMoodWeekday}</span>.</span>
+                            ) : (
+                                'Not enough mood entries to identify a best day.'
+                            )}
                         </p>
                     </div>
                     <div className="p-4 bg-white/50 rounded-2xl border border-white/50">
-                        <h4 className="text-sm font-semibold text-gray-500 uppercase">Balance</h4>
-                        <p className="text-gray-800 font-medium mt-1">
-                            Your average mood is <span className="font-bold">{avgMoodWeek.toFixed(1)}/10</span>.
-                            {avgMoodWeek >= 7 ? " You are thriving! 🌟" : avgMoodWeek >= 5 ? " You are holding steady. 🌿" : " Be gentle with yourself. 🤍"}
-                        </p>
+                        <h4 className="text-sm font-semibold text-gray-500 uppercase">Logging Consistency</h4>
+                        <p className="text-gray-800 font-medium mt-1">You have logged data on <span className="font-bold">{consistencyPct}%</span> of days in the selected range.</p>
+                        <div className="w-full bg-white/20 rounded-full h-2 mt-3">
+                            <div className="h-2 rounded-full bg-wistful" style={{ width: `${consistencyPct}%` }} />
+                        </div>
                     </div>
                 </div>
+                <p className="text-sm text-gray-500 mt-4">These insights are computed from your logged entries. For more personalized suggestions, log more daily data points.</p>
             </section>
 
         </div>
