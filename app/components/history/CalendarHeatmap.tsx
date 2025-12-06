@@ -172,11 +172,11 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
         <span>Less</span>
         <div className="flex gap-1" aria-hidden="true">
           <div className="w-3 h-3 bg-gray-200/50 rounded-xs" />
-          <div className="w-3 h-3 bg-(--clam-shell) rounded-xs" />
+          <div className="w-3 h-3 bg-clam-shell rounded-xs" />
           <div className="w-3 h-3 bg-(--wistful)/80 rounded-xs" />
-          <div className="w-3 h-3 bg-(--sidecar) rounded-xs" />
-          <div className="w-3 h-3 bg-(--blizzard-blue) rounded-xs" />
-          <div className="w-3 h-3 bg-(--mint-tulip) rounded-xs" />
+          <div className="w-3 h-3 bg-sidecar rounded-xs" />
+          <div className="w-3 h-3 bg-blizzard-blue rounded-xs" />
+          <div className="w-3 h-3 bg-mint-tulip rounded-xs" />
         </div>
         <span>More</span>
       </div>
