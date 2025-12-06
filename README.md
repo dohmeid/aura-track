@@ -11,6 +11,31 @@
 
 **AuraTrack** goes beyond simple smiley-face logging. It offers a calm, aesthetically pleasing interface to record detailed metrics about your day—including triggers, coping mechanisms, sleep hours, and energy levels. It uses advanced data visualization to correlate these metrics, helping you find balance and mindfulness.
 
+1. Home page
+<img width="1277" height="728" alt="image" src="https://github.com/user-attachments/assets/b9138cb2-912f-42e3-be85-f9c0a3e5f921" />
+<img width="1280" height="682" alt="image" src="https://github.com/user-attachments/assets/c6690a0c-e3c5-4358-a105-4c329ad27beb" />
+
+2. Login / SignUp pages
+<img width="1279" height="732" alt="image" src="https://github.com/user-attachments/assets/ca2d2bdd-3532-47d8-8acd-d55801b86220" />
+<img width="1280" height="737" alt="image" src="https://github.com/user-attachments/assets/cbe11e1f-f68e-45cd-8496-9df0ec9e5db9" />
+
+3. Dashboard
+<img width="1279" height="737" alt="image" src="https://github.com/user-attachments/assets/07b1fb9a-837d-4f17-931b-85763162aa92" />
+
+4. Log Mood Page
+<img width="1274" height="730" alt="image" src="https://github.com/user-attachments/assets/612cd201-aefe-42c5-836b-528f3d52b170" />
+<img width="1277" height="697" alt="image" src="https://github.com/user-attachments/assets/7c3d94cd-1c9f-4453-b771-6128b256add3" />
+<img width="1277" height="414" alt="image" src="https://github.com/user-attachments/assets/3f418297-6d10-4ba3-bf60-c866ca9b950a" />
+
+5. Mood History page
+<img width="1279" height="731" alt="image" src="https://github.com/user-attachments/assets/cddc435a-d782-4ca9-b1c9-0eacfbc37c78" />
+
+6. Insights page
+<img width="1280" height="733" alt="image" src="https://github.com/user-attachments/assets/92789360-9824-4946-85aa-2d002539b382" />
+<img width="1277" height="727" alt="image" src="https://github.com/user-attachments/assets/1f52ef6e-bc51-4c04-99de-8a78a631a757" />
+
+
+
 ## 🚀 Key Features
 
 * **Daily Check-ins**: Log your mood score (1-10), specific emotions, triggers, coping actions, and detailed notes.
