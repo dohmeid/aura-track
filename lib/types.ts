@@ -15,7 +15,9 @@ export interface Mood {
   activities: string[];
   sleepHours: number;
   energyLevel: number;
-  timestamp: Date;
+  // When data is serialized (from DB -> JSON) timestamps are strings.
+  // Accept both `string` and `Date` for flexibility in server/client code.
+  timestamp: string | Date;
 }
 
 export interface MoodFormState {

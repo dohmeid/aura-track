@@ -86,6 +86,9 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
     return { weeks: weeksData, monthLabels: monthsData };
   }, [moodMap]);
 
+  // Guard against zero weeks when calculating month label widths
+  const totalWeeks = weeks.length || 52;
+
   // Updated to show all days and align correctly with standard JS getDay() (0=Sunday)
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -104,9 +107,9 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
               <div
                 key={m.label + i}
                 style={{
-                  // Approximate width of a week
-                  width: `${(weeks.length / 12) * 100}%`,
-                  flex: 1
+                  // Distribute labels across the available weeks (safe fallback applied)
+                  width: `${(totalWeeks / 12) * 100}%`,
+                  flex: 1,
                 }}
               >
                 {m.label}
@@ -167,13 +170,13 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
       {/* Legend */}
       <div className="flex justify-end items-center flex-wrap gap-4 mt-6 text-xs text-gray-500 font-medium border-t border-gray-100 pt-4">
         <span>Less</span>
-        <div className="flex gap-1">
-          <div className="w-3 h-3 bg-gray-200/50 rounded-xs"></div>
-          <div className="w-3 h-3 bg-clam-shell rounded-xs"></div>
-          <div className="w-3 h-3 bg-(--wistful)/80 rounded-xs"></div>
-          <div className="w-3 h-3 bg-sidecar rounded-xs"></div>
-          <div className="w-3 h-3 bg-blizzard-blue rounded-xs"></div>
-          <div className="w-3 h-3 bg-mint-tulip rounded-xs"></div>
+        <div className="flex gap-1" aria-hidden="true">
+          <div className="w-3 h-3 bg-gray-200/50 rounded-xs" />
+          <div className="w-3 h-3 bg-(--clam-shell) rounded-xs" />
+          <div className="w-3 h-3 bg-(--wistful)/80 rounded-xs" />
+          <div className="w-3 h-3 bg-(--sidecar) rounded-xs" />
+          <div className="w-3 h-3 bg-(--blizzard-blue) rounded-xs" />
+          <div className="w-3 h-3 bg-(--mint-tulip) rounded-xs" />
         </div>
         <span>More</span>
       </div>

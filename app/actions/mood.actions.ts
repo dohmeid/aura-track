@@ -5,6 +5,7 @@ import Mood from '@/lib/models/mood.model';
 import dbConnect from '@/lib/db/mongodb';
 import { MoodFormState } from '@/lib/types';
 import { getLocalStartOfDay, getLocalEndOfDay } from '@/lib/utils/timezone.utils';
+import type { Mood as MoodType } from '@/lib/types';
 
 export async function saveMood (
   prevState: MoodFormState,
@@ -109,7 +110,7 @@ export async function saveMood (
   }
 }
 
-export async function getMoodsForUser ({
+export async function getMoodsForUser({
   userId,
   filter = 'all',
   sort = 'newest',
@@ -117,10 +118,10 @@ export async function getMoodsForUser ({
   userId: string;
   filter?: string;
   sort?: string;
-}) {
-  try {
-    await dbConnect();
+}): Promise<MoodType[]> {
+  await dbConnect();
 
+  try {
     const query: any = { userId };
     const now = new Date();
     let startDate;
@@ -146,9 +147,11 @@ export async function getMoodsForUser ({
     const sortOrder = sort === 'newest' ? -1 : 1;
 
     const moods = await Mood.find(query).sort({ timestamp: sortOrder });
-    return JSON.parse(JSON.stringify(moods));
+    // Return as plain objects (timestamps will serialize as ISO strings)
+    return JSON.parse(JSON.stringify(moods)) as MoodType[];
   } catch (error) {
+    // Let the caller decide how to handle errors (do not swallow)
     console.error('Error fetching moods:', error);
-    return [];
+    throw error;
   }
 }

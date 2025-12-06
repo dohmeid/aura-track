@@ -11,7 +11,7 @@ interface FilterSortControlsProps {
 
 const FilterSortControls: React.FC<FilterSortControlsProps> = ({ activeFilter, activeSort }) => {
 
-  const FilterLink = ({ value, label, type }: { value: string, label: string, type: 'filter' | 'sort' }) => {
+  const FilterLink = ({ value, label, type }: { value: string; label: string; type: 'filter' | 'sort' }) => {
     const isActive = type === 'filter' ? activeFilter === value : activeSort === value;
 
     // Construct new params while preserving the other type
@@ -23,11 +23,13 @@ const FilterSortControls: React.FC<FilterSortControlsProps> = ({ activeFilter, a
       <Link
         href={href}
         aria-current={isActive ? 'page' : undefined}
+        aria-pressed={isActive}
+        title={`Set ${label}`}
         className={cn(
-          "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex-1 text-center",
+          'px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex-1 text-center',
           isActive
-            ? "bg-chantilly text-white shadow-md transform scale-105"
-            : "text-gray-600 hover:bg-(--wistful)/10 hover:text-gray-900"
+            ? 'bg-(--chantilly) text-white shadow-md transform scale-105'
+            : 'text-gray-600 hover:bg-(--wistful)/10 hover:text-gray-900'
         )}
       >
         {label}

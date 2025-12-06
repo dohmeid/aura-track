@@ -7,6 +7,7 @@ import MoodEntryCard from '@/app/components/history/MoodEntryCard';
 import { getMoodsForUser } from '@/app/actions/mood.actions';
 import { getCurrentUser } from '@/app/actions/auth.actions';
 import { Mood } from '@/lib/types';
+import { JSX } from 'react';
 
 export const metadata: Metadata = {
   title: 'History | AuraTrack',
@@ -14,10 +15,10 @@ export const metadata: Metadata = {
 };
 
 interface HistoryPageProps {
-  searchParams?: { filterBy?: string; sort?: string };
+  searchParams?: { filterBy?: string | string[]; sort?: string | string[] };
 }
 
-const HistoryPage = async (props: HistoryPageProps) => {
+const HistoryPage = async (props: HistoryPageProps): Promise<JSX.Element> => {
   const { searchParams } = props;
   const user = await getCurrentUser();
 
@@ -25,16 +26,26 @@ const HistoryPage = async (props: HistoryPageProps) => {
     redirect('/login', RedirectType.replace);
   }
 
-  // Awaiting searchParams to avoid potential sync issues in future Next.js versions
-  const params = await searchParams;
-  const filterBy = params?.filterBy || 'all';
-  const sort = params?.sort || 'newest';
+  // Robustly handle searchParams which may be strings or string[] per Next.js
+  const params = searchParams ?? {};
+  const firstOrValue = (v?: string | string[]) => (Array.isArray(v) ? v[0] : v);
+  const filterBy = firstOrValue(params.filterBy) ?? 'all';
+  const sort = firstOrValue(params.sort) ?? 'newest';
 
-  const moods: Mood[] = await getMoodsForUser({
-    userId: user.userId,
-    filter: filterBy,
-    sort
-  });
+  let moods: Mood[] = [];
+  let fetchError: string | null = null;
+  try {
+    moods = await getMoodsForUser({
+      userId: user.userId,
+      filter: filterBy,
+      sort,
+    });
+  } catch (err) {
+    // Log on the server and show a friendly message in the UI
+    // eslint-disable-next-line no-console
+    console.error('Error fetching moods for user', (err as Error).message || err);
+    fetchError = 'Unable to load your mood history. Please try again later.';
+  }
 
   return (
     <div className="min-h-screen p-4 md:p-8 space-y-8 max-w-7xl mx-auto w-full">
@@ -70,14 +81,24 @@ const HistoryPage = async (props: HistoryPageProps) => {
       >
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-xl font-bold text-gray-700">
-            {filterBy === 'all' ? 'All Entries' : `${filterBy.charAt(0).toUpperCase() + filterBy.slice(1)} Entries`}
+            {filterBy === 'all'
+              ? 'All Entries'
+              : `${filterBy.charAt(0).toUpperCase() + filterBy.slice(1)} Entries`}
           </h2>
           <span className="text-sm px-2 py-0.5 bg-gray-200 text-gray-600 rounded-full font-medium">
-            {moods.length}
+            {moods?.length ?? 0}
           </span>
         </div>
 
-        {moods.length > 0 ? (
+        {fetchError ? (
+          <div
+            role="status"
+            aria-live="polite"
+            className="p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800"
+          >
+            {fetchError}
+          </div>
+        ) : moods && moods.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {moods.map((mood) => (
               <MoodEntryCard key={mood._id} mood={mood} />
@@ -91,7 +112,7 @@ const HistoryPage = async (props: HistoryPageProps) => {
             <h3 className="text-lg font-semibold text-gray-600">No moods found</h3>
             <p className="text-gray-500 max-w-sm mx-auto mt-2">
               {filterBy !== 'all'
-                ? "Try changing your filters to see more entries."
+                ? 'Try changing your filters to see more entries.'
                 : "You haven't logged any moods yet. Go to the dashboard to check in!"}
             </p>
           </div>

@@ -8,6 +8,7 @@ interface MoodEntryCardProps {
 
 const MoodEntryCard: React.FC<MoodEntryCardProps> = ({ mood }) => {
     const { timestamp, moodEmotion, sleepHours, energyLevel, activities, moodDescription, _id } = mood;
+    const headingId = `mood-title-${_id}`;
 
     // Determine color bar based on score (visual indicator)
     const scoreColor =
@@ -16,7 +17,7 @@ const MoodEntryCard: React.FC<MoodEntryCardProps> = ({ mood }) => {
                 'bg-[var(--clam-shell)]';
 
     return (
-        <article className="group relative overflow-hidden bg-white/70 backdrop-blur-md border border-white/60 rounded-3xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+        <article aria-labelledby={headingId} className="group relative overflow-hidden bg-white/70 backdrop-blur-md border border-white/60 rounded-3xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
 
             {/* Visual Indicator Bar on Left */}
             <div className={`absolute left-0 top-0 bottom-0 w-2 ${scoreColor} opacity-70`}></div>
@@ -30,7 +31,7 @@ const MoodEntryCard: React.FC<MoodEntryCardProps> = ({ mood }) => {
                             <span className="text-[10px] uppercase font-bold tracking-wider opacity-60">/10</span>
                         </div>
                         <div>
-                            <h3 className="text-2xl font-bold text-gray-800 capitalize">{moodEmotion}</h3>
+                            <h3 id={headingId} className="text-2xl font-bold text-gray-800 capitalize">{moodEmotion}</h3>
                             <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
                                 <Calendar size={14} />
                                 <time dateTime={new Date(timestamp).toISOString()}>
@@ -68,16 +69,16 @@ const MoodEntryCard: React.FC<MoodEntryCardProps> = ({ mood }) => {
                         <div className="flex items-center gap-2 text-xs text-gray-400 uppercase tracking-wider font-bold mb-1">
                             <Activity size={14} className="text-chantilly" /> Activities
                         </div>
-                        <p className="text-sm text-gray-600 truncate">
-                            {activities.length > 0 ? activities.join(', ') : 'No activities logged'}
-                        </p>
+                            <p className="text-sm text-gray-600 truncate">
+                                {activities && activities.length > 0 ? activities.join(', ') : 'No activities logged'}
+                            </p>
                     </div>
                 </div>
 
                 {/* Expandable Notes */}
                 {moodDescription && (
                     <details className="group/details border-t border-gray-100 pt-4">
-                        <summary className="cursor-pointer list-none flex items-center gap-2 text-sm font-semibold text-wistful hover:text-chantilly transition-colors">
+                        <summary className="cursor-pointer list-none flex items-center gap-2 text-sm font-semibold text-(--wistful) hover:text-(--chantilly) transition-colors">
                             <span>View Notes</span>
                             <ChevronDown size={16} className="transform transition-transform duration-300 group-open/details:rotate-180" />
                         </summary>
