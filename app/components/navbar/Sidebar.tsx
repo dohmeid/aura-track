@@ -19,7 +19,6 @@ const navItems = [
   { label: 'Log Mood', icon: 'Heart', href: '/log-mood' },
   { label: 'History', icon: 'History', href: '/history' },
   { label: 'Insights', icon: 'Zap', href: '/insights' },
-  { label: 'Profile', icon: 'User', href: '/profile' },
 ] as const;
 
 export default function Sidebar({ user }: SidebarProps) {
@@ -54,17 +53,16 @@ export default function Sidebar({ user }: SidebarProps) {
 
         {/* User Section */}
         <div
-          className={`mb-8 flex items-center transition-all duration-300 ${
-            isCollapsed ? 'justify-center' : 'gap-3 rounded-2xl p-4'
-          }`}
+          className={`mb-8 flex items-center transition-all duration-300 ${isCollapsed ? 'justify-center' : 'gap-3 rounded-2xl p-4'
+            }`}
           style={
             !isCollapsed
               ? {
-                  background: `linear-gradient(135deg,
+                background: `linear-gradient(135deg,
                                 rgba(243, 178, 221, 0.08) 0%,
                                 rgba(196, 242, 232, 0.06) 100%)`,
-                  border: '1px solid rgba(205, 206, 211, 0.2)',
-                }
+                border: '1px solid rgba(205, 206, 211, 0.2)',
+              }
               : {}
           }
         >
