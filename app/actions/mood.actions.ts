@@ -1,0 +1,157 @@
+'use server';
+import { revalidatePath } from 'next/cache';
+import { getCurrentUser } from './auth.actions';
+import Mood from '@/lib/models/mood.model';
+import dbConnect from '@/lib/db/mongodb';
+import { MoodFormState } from '@/lib/types';
+import { getLocalStartOfDay, getLocalEndOfDay } from '@/lib/utils/timezone.utils';
+import type { Mood as MoodType } from '@/lib/types';
+
+export async function saveMood (
+  prevState: MoodFormState,
+  formData: FormData
+): Promise<MoodFormState> {
+  try {
+    await dbConnect();
+
+    const user = await getCurrentUser();
+    if (!user) {
+      return {
+        success: false,
+        message: 'You must be logged in to save a mood entry.',
+      };
+    }
+
+    // --- Data Extraction & Parsing ---
+
+    // Helper to safely parse numbers
+    const getNumber = (key: string, defaultVal: number) => {
+      const val = formData.get(key);
+      if (!val) return defaultVal;
+      const parsed = Number(val);
+      return isNaN(parsed) ? defaultVal : parsed;
+    };
+
+    // Helper to parse comma-separated lists
+    const getArray = (key: string) => {
+      const val = formData.get(key);
+      if (!val || typeof val !== 'string') return [];
+      return val.split(',').filter((item) => item.trim().length > 0);
+    };
+
+    const moodScore = getNumber('moodScore', 0); // Default 0 to trigger validation
+    const sleepHours = getNumber('sleepHours', 7);
+    const energyLevel = getNumber('energyLevel', 50);
+
+    const emotion = formData.get('moodEmotion') as string;
+    const description = formData.get('moodDescription') as string;
+
+    const moodTriggers = getArray('moodTriggers');
+    const copingActions = getArray('copingActions');
+    const activities = getArray('activities');
+
+    // --- Validation Logic ---
+    if (moodScore < 1 || moodScore > 10) {
+      return {
+        success: false,
+        message: 'Please select a valid mood score between 1 and 10.',
+      };
+    }
+
+    if (!emotion || emotion.trim() === '') {
+      return {
+        success: false,
+        message: 'Please select an emotion that best describes your state.',
+      };
+    }
+
+    // --- Database Operation ---
+    const startOfDay = getLocalStartOfDay();
+    const endOfDay = getLocalEndOfDay();
+
+    await Mood.findOneAndUpdate(
+      {
+        userId: user.userId,
+        timestamp: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+      },
+      {
+        moodScore,
+        emotion: emotion,
+        moodEmotion: emotion,
+        moodDescription: description,
+        moodTriggers,
+        copingActions,
+        activities,
+        sleepHours,
+        energyLevel,
+        timestamp: new Date(),
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    // Revalidate paths to update UI immediately
+    revalidatePath('/home');
+    revalidatePath('/history');
+    revalidatePath('/insights');
+
+    return {
+      success: true,
+      message: 'Your mood has been logged successfully! ✨',
+    };
+  } catch (error) {
+    console.error('Error saving mood:', error);
+    return {
+      success: false,
+      message: 'Something went wrong. Please try again later.',
+    };
+  }
+}
+
+export async function getMoodsForUser({
+  userId,
+  filter = 'all',
+  sort = 'newest',
+}: {
+  userId: string;
+  filter?: string;
+  sort?: string;
+}): Promise<MoodType[]> {
+  await dbConnect();
+
+  try {
+    const query: { userId: string; timestamp?: { $gte?: Date; $lte?: Date } } = { userId };
+    const now = new Date();
+    let startDate;
+
+    switch (filter) {
+      case 'week':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        break;
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        break;
+      case 'year':
+        startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        break;
+      default:
+        break;
+    }
+
+    if (startDate) {
+      query.timestamp = { $gte: startDate };
+    }
+
+    const sortOrder = sort === 'newest' ? -1 : 1;
+
+    const moods = await Mood.find(query).sort({ timestamp: sortOrder });
+    // Return as plain objects (timestamps will serialize as ISO strings)
+    return JSON.parse(JSON.stringify(moods)) as MoodType[];
+  } catch (error) {
+    // Let the caller decide how to handle errors (do not swallow)
+    console.error('Error fetching moods:', error);
+    throw error;
+  }
+}
