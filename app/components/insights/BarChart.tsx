@@ -47,7 +47,7 @@ export default function BarChart({ data, height = 220 }: Props) {
         maxBarThickness: 32,
       },
     ],
-  } as const;
+  };
 
   const options = {
     indexAxis: 'x',
@@ -65,9 +65,9 @@ export default function BarChart({ data, height = 220 }: Props) {
         cornerRadius: 12,
         displayColors: false,
         callbacks: {
-          label: function (context: { parsed: { y: number } }) {
-            const v = context.parsed.y;
-            return `${v} hrs`;
+          label: function (tooltipItem: import("chart.js").TooltipItem<"bar">) {
+            const v = tooltipItem.parsed.y;
+            return v !== null && v !== undefined ? `${v} hrs` : '';
           },
         },
       },

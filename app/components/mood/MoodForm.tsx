@@ -142,7 +142,7 @@ export default function MoodForm() {
     if (state.message) {
       const snackType = state.success ? 'success' : 'error';
       setTimeout(() => {
-        setSnackState({ show: true, msg: state.message, type: snackType });
+        setSnackState({ show: true, msg: state.message ?? '', type: snackType });
         if (state.success) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }

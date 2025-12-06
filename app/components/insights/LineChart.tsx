@@ -87,9 +87,9 @@ export default function LineChart({ data, height = 200, color = '#9fa1d2', maxY 
         cornerRadius: 12,
         displayColors: false,
         callbacks: {
-          label: function (context: { parsed: { y: number } }) {
-            const v = context.parsed.y;
-            return `Score: ${v}`;
+          label: function (tooltipItem: import("chart.js").TooltipItem<"line">) {
+            const v = tooltipItem.parsed.y;
+            return `Score: ${v !== null && v !== undefined ? v : '-'}`;
           },
         },
       },

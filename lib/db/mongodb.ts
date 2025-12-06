@@ -16,6 +16,11 @@ interface MongooseCache {
   promise: Promise<Mongoose> | null;
 }
 
+// Extend the NodeJS.Global interface to include our mongoose cache.
+declare global {
+  var mongoose: MongooseCache;
+}
+
 /**
  * We cache the database connection (mongoose.conn) and the promise (mongoose.promise) on the global object.
  * This prevents multiple, concurrent connections from being created during hot-reloading in development.
@@ -23,10 +28,10 @@ interface MongooseCache {
  * In production, serverless functions spin up and down, and this ensures
  * we reuse an existing connection if one is available.
  */
-let cached: MongooseCache = (global as NodeJS.Global & typeof globalThis & { mongoose?: MongooseCache }).mongoose;
+let cached = global.mongoose;
 
 if (!cached) {
-  cached = (global as NodeJS.Global & typeof globalThis & { mongoose?: MongooseCache }).mongoose = { conn: null, promise: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function connectDB() {

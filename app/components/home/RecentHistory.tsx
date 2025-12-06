@@ -1,7 +1,7 @@
-import { MoodEntry } from '@/lib/types';
+import { Mood } from '@/lib/types';
 import { Clock } from 'lucide-react';
 
-export default function RecentHistory({ moods }: { moods: MoodEntry[] }) {
+export default function RecentHistory({ moods }: { moods: Mood[] }) {
   // Take last 3 entries
   const recent = moods.slice(0, 3);
 
