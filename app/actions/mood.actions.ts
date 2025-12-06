@@ -2,9 +2,9 @@
 import { revalidatePath } from 'next/cache';
 import { getCurrentUser } from './auth.actions';
 import Mood from '@/lib/models/mood.model';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db/mongodb';
 import { MoodFormState } from '@/lib/types';
-import { getLocalStartOfDay, getLocalEndOfDay } from '@/lib/timezone.utils';
+import { getLocalStartOfDay, getLocalEndOfDay } from '@/lib/utils/timezone.utils';
 
 export async function saveMood (
   prevState: MoodFormState,

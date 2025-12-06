@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifyTokenServer } from '@/lib/auth.utils';
+import { verifyTokenServer } from '@/lib/utils/auth.utils';
 
 // This middleware file acts as a gatekeeper for the application.
 // It runs before a request is completed, allowing to redirect or rewrite requests based on authentication status.

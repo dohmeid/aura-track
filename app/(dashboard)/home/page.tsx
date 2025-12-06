@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/app/actions/auth.actions';
 import { getMoodsForUser } from '@/app/actions/mood.actions';
-import { calculateStreaks } from '@/lib/insights.utils';
-import { isSameLocalDay } from '@/lib/timezone.utils';
+import { calculateStreaks } from '@/lib/utils/insights.utils';
+import { isSameLocalDay } from '@/lib/utils/timezone.utils';
 import { Mood } from '@/lib/types';
 
 // Components

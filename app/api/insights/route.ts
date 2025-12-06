@@ -1,9 +1,9 @@
-import connectDB from '@/lib/mongodb';
+import connectDB from '@/lib/db/mongodb';
 import Mood from '@/lib/models/mood.model';
-import { verifyTokenServer } from '@/lib/auth.utils';
+import { verifyTokenServer } from '@/lib/utils/auth.utils';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { toLocalISODate } from '@/lib/timezone.utils';
+import { toLocalISODate } from '@/lib/utils/timezone.utils';
 
 function startOfDay(d: Date) {
   const n = new Date(d);

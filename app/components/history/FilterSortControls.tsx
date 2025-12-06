@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Filter, ArrowUpDown } from 'lucide-react';
-import { cn } from '@/lib/insights.utils';
+import { cn } from '@/lib/utils/insights.utils';
 
 interface FilterSortControlsProps {
   activeFilter: string;

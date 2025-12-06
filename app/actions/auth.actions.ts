@@ -1,8 +1,8 @@
 'use server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import connectDB from '@/lib/mongodb';
-import { comparePasswords, createToken, hashPassword, verifyTokenServer } from '@/lib/auth.utils';
+import connectDB from '@/lib/db/mongodb';
+import { comparePasswords, createToken, hashPassword, verifyTokenServer } from '@/lib/utils/auth.utils';
 import { loginSchema, signUpSchema } from '@/lib/validation/auth.validations';
 import User from '@/lib/models/user.model';
 

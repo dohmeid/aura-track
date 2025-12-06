@@ -1,8 +1,8 @@
 'use client';
 import React, { useMemo } from 'react';
 import { Mood } from '@/lib/types';
-import { cn } from '@/lib/insights.utils';
-import { toLocalISODate } from '@/lib/timezone.utils';
+import { cn } from '@/lib/utils/insights.utils';
+import { toLocalISODate } from '@/lib/utils/timezone.utils';
 
 interface CalendarHeatmapProps {
   moods: Mood[];
