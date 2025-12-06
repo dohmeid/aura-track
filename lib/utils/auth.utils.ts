@@ -32,7 +32,7 @@ export const comparePasswords = async (
   return isMatch;
 };
 
-export const createToken = async (payload: Record<string, any>): Promise<string> => {
+export const createToken = async (payload: Record<string, string | number | boolean>): Promise<string> => {
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -45,7 +45,7 @@ export const verifyTokenServer = async (token: string): Promise<JWTPayload | nul
   try {
     const { payload } = await jwtVerify(token, secretKey);
     return payload;
-  } catch (error) {
+  } catch {
     return null;
   }
 };

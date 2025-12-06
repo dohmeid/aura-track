@@ -5,7 +5,11 @@ export function cn (...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function calculateStreaks (moods: any[]): number {
+interface Mood {
+  timestamp: string | Date;
+}
+
+export function calculateStreaks (moods: Mood[]): number {
   if (moods.length === 0) {
     return 0;
   }
@@ -15,7 +19,7 @@ export function calculateStreaks (moods: any[]): number {
   );
 
   let streak = 0;
-  let today = new Date();
+  const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const moodDates = sortedMoods.map((mood) => {
@@ -26,7 +30,7 @@ export function calculateStreaks (moods: any[]): number {
 
   const uniqueMoodDates = [...new Set(moodDates)];
 
-  let currentDate = new Date(today);
+  const currentDate = new Date(today);
 
   for (let i = 0; i < uniqueMoodDates.length; i++) {
     const moodDate = new Date(uniqueMoodDates[i]);

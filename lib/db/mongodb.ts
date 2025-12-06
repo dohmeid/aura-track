@@ -23,10 +23,10 @@ interface MongooseCache {
  * In production, serverless functions spin up and down, and this ensures
  * we reuse an existing connection if one is available.
  */
-let cached: MongooseCache = (global as any).mongoose;
+let cached: MongooseCache = (global as NodeJS.Global & typeof globalThis & { mongoose?: MongooseCache }).mongoose;
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = (global as NodeJS.Global & typeof globalThis & { mongoose?: MongooseCache }).mongoose = { conn: null, promise: null };
 }
 
 async function connectDB() {
@@ -48,10 +48,10 @@ async function connectDB() {
   // Wait for the connection to complete and store it in the cache.
   try {
     cached.conn = await cached.promise;
-  } catch (e) {
+  } catch (error) {
     // If connection fails, clear the promise to allow retries.
     cached.promise = null;
-    throw e;
+    throw error;
   }
 
   // Return the active connection.

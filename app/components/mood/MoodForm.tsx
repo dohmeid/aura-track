@@ -140,12 +140,13 @@ export default function MoodForm() {
   // Reset form on success
   useEffect(() => {
     if (state.message) {
-      if (state.success) {
-        setSnackState({ show: true, msg: state.message, type: 'success' });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setSnackState({ show: true, msg: state.message, type: 'error' });
-      }
+      const snackType = state.success ? 'success' : 'error';
+      setTimeout(() => {
+        setSnackState({ show: true, msg: state.message, type: snackType });
+        if (state.success) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 0);
     }
   }, [state]);
 

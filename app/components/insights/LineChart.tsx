@@ -87,7 +87,7 @@ export default function LineChart({ data, height = 200, color = '#9fa1d2', maxY 
         cornerRadius: 12,
         displayColors: false,
         callbacks: {
-          label: function (context: any) {
+          label: function (context: { parsed: { y: number } }) {
             const v = context.parsed.y;
             return `Score: ${v}`;
           },
@@ -113,14 +113,14 @@ export default function LineChart({ data, height = 200, color = '#9fa1d2', maxY 
           stepSize: maxY / 5,
           color: '#9ca3af',
           font: { size: 10 },
-          callback: function (value: any) {
+          callback: function (value: string | number) {
             return Number(value).toFixed(0);
           },
         },
         border: { display: false }
       },
     },
-  } as any;
+  } as const;
 
   return (
     <div className="w-full h-full min-h-[200px]">

@@ -122,7 +122,7 @@ export async function getMoodsForUser({
   await dbConnect();
 
   try {
-    const query: any = { userId };
+    const query: { userId: string; timestamp?: { $gte?: Date; $lte?: Date } } = { userId };
     const now = new Date();
     let startDate;
 

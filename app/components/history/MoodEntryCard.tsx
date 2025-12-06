@@ -83,7 +83,7 @@ const MoodEntryCard: React.FC<MoodEntryCardProps> = ({ mood }) => {
                             <ChevronDown size={16} className="transform transition-transform duration-300 group-open/details:rotate-180" />
                         </summary>
                         <div className="mt-3 text-gray-600 italic leading-relaxed bg-(--sidecar)/10 p-4 rounded-xl text-sm animate-in slide-in-from-top-2 fade-in duration-300">
-                            "{moodDescription}"
+                            &quot;{moodDescription}&quot;
                         </div>
                     </details>
                 )}

@@ -24,7 +24,7 @@ export default function QuoteCard() {
       <Quote className="absolute top-4 right-4 text-dark-yelow/20 w-16 h-16 rotate-12 transition-transform duration-500 group-hover:rotate-45 group-hover:scale-110" />
       <div className="relative">
         <p className="font-medium text-gray-800 leading-relaxed font-serif group-hover:text-gray-900 transition-colors text-center">
-          "{quote}"
+          &quot;{quote}&quot;
         </p>
       </div>
     </div>

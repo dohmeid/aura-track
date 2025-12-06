@@ -71,8 +71,8 @@ export async function GET(req: Request) {
     const energySeries: { x: string; y: number | null }[] = [];
 
     // Build map by iso date
-    const map = new Map<string, any[]>();
-    for (let e of entries) {
+    const map = new Map<string, typeof entries>();
+    for (const e of entries) {
       const d = isoDate(new Date(e.timestamp));
       if (!map.has(d)) map.set(d, []);
       const list = map.get(d)!;
@@ -100,7 +100,7 @@ export async function GET(req: Request) {
 
     // Distribution across range
     const distributionMap: Record<string, number> = {};
-    for (let e of entries) {
+    for (const e of entries) {
       const label = e.moodEmotion || 'Unknown';
       distributionMap[label] = (distributionMap[label] || 0) + 1;
     }
@@ -120,7 +120,7 @@ export async function GET(req: Request) {
 
     // Best day of week
     const byWeek: Record<number, { sum: number; cnt: number }> = {};
-    for (let e of entries) {
+    for (const e of entries) {
       if (typeof e.moodScore !== 'number') continue;
       const w = new Date(e.timestamp).getDay();
       if (!byWeek[w]) byWeek[w] = { sum: 0, cnt: 0 };

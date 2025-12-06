@@ -37,7 +37,6 @@ export default function InsightsPage() {
     const [energySeries, setEnergySeries] = useState<{ x: string; y: number | null }[]>([]);
     const [distribution, setDistribution] = useState<{ label: string; value: number }[]>([]);
     const [averages, setAverages] = useState<{ avgMoodRange: number; avgMood7: number } | null>(null);
-    const [correlation, setCorrelation] = useState<any>(null);
     const [bestDay, setBestDay] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -62,7 +61,6 @@ export default function InsightsPage() {
                     setEnergySeries(data.energySeries || []);
                     setDistribution(data.distribution || []);
                     setAverages(data.averages || null);
-                    setCorrelation(data.correlation || null);
                     setBestDay(data.bestDay || null);
                     setLoading(false);
                 }, 300);
@@ -123,7 +121,7 @@ export default function InsightsPage() {
             const denom = Math.sqrt(denX * denY);
             if (denom === 0) return 0;
             return +(num / denom).toFixed(2);
-        } catch (err) {
+        } catch {
             return null;
         }
     }, [sleepSeries, energySeries]);
@@ -132,11 +130,11 @@ export default function InsightsPage() {
         try {
             const valid = moodSeries.filter(m => typeof m.y === 'number');
             if (!valid.length) return null;
-            const best = valid.reduce((a, b) => ( (b.y as number) > (a.y as number) ? b : a ));
+            const best = valid.reduce((a, b) => ((b.y as number) > (a.y as number) ? b : a));
             const date = new Date(String(best.x));
-            const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             return weekdays[date.getDay()];
-        } catch (err) {
+        } catch {
             return null;
         }
     }, [moodSeries]);
@@ -144,12 +142,14 @@ export default function InsightsPage() {
     const consistencyPct = React.useMemo(() => {
         try {
             const set = new Set<string>();
-            const addDates = (arr: { x: any; y: any }[]) => arr.forEach(it => { if (it.y !== null && it.y !== undefined) set.add(String(it.x)); });
+            const addDates = (arr: { x: string; y: number | null }[]) => arr.forEach(it => { if (it.y !== null && it.y !== undefined) set.add(String(it.x)); });
             addDates(moodSeries); addDates(sleepSeries); addDates(energySeries);
             if (!days) return 0;
             const pct = Math.min(100, Math.round((set.size / days) * 100));
             return pct;
-        } catch (err) { return 0; }
+        } catch {
+            return 0;
+        }
     }, [moodSeries, sleepSeries, energySeries, days]);
     if (loading) {
         return (
@@ -196,8 +196,8 @@ export default function InsightsPage() {
                             key={d}
                             onClick={() => setDays(d)}
                             className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${d === days
-                                    ? 'bg-white text-wistful shadow-sm ring-1 ring-black/5'
-                                    : 'text-gray-400 hover:text-gray-600 hover:bg-white/40'
+                                ? 'bg-white text-wistful shadow-sm ring-1 ring-black/5'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-white/40'
                                 }`}
                         >
                             {d}d
@@ -254,7 +254,7 @@ export default function InsightsPage() {
                         </div>
                     </div>
                     <div className="h-[280px] w-full">
-                        <LineChart data={moodSeries as any} height={280} color="#9fa1d2" />
+                        <LineChart data={moodSeries.filter((d) => d.y !== null).map((d) => ({ x: d.x, y: d.y as number }))} height={280} color="#9fa1d2" />
                     </div>
                 </div>
 
@@ -276,7 +276,7 @@ export default function InsightsPage() {
                     <h2 className="text-lg font-bold text-gray-700 mb-1">Sleep Patterns</h2>
                     <p className="text-sm text-gray-400 mb-6">Hours slept per night</p>
                     <div className="h-[220px]">
-                        <BarChart data={sleepSeries.map((s) => ({ label: String(s.x).slice(5), value: s.y })) as any} height={220} />
+                        <BarChart data={sleepSeries.filter((s) => s.y !== null).map((s) => ({ label: String(s.x).slice(5), value: s.y as number }))} height={220} />
                     </div>
                 </div>
 
@@ -285,7 +285,7 @@ export default function InsightsPage() {
                     <h2 className="text-lg font-bold text-gray-700 mb-1">Energy Levels</h2>
                     <p className="text-sm text-gray-400 mb-6">Daily reported energy %</p>
                     <div className="h-[220px]">
-                        <LineChart data={energySeries.filter((d) => d.y !== null) as any} height={220} color="#fbbf24" maxY={100} showAllLabels={true} />
+                        <LineChart data={energySeries.filter((d) => d.y !== null).map((d) => ({ x: d.x, y: d.y as number }))} height={220} color="#fbbf24" maxY={100} showAllLabels={true} />
                     </div>
                 </div>
             </div>
@@ -335,6 +335,7 @@ export default function InsightsPage() {
                 <p className="text-sm text-gray-500 mt-4">These insights are computed from your logged entries. For more personalized suggestions, log more daily data points.</p>
             </section>
 
-        </div>
+
+        </div >
     );
 }

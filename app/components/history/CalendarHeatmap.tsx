@@ -38,7 +38,7 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
     const weeksData = [];
     const monthsData = [];
 
-    let currentDate = new Date(startOfYear);
+    const currentDate = new Date(startOfYear);
 
     // Adjust start date to the previous Sunday to align grid
     const dayOfWeek = currentDate.getDay(); // 0 = Sunday
@@ -131,7 +131,7 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({ moods }) => {
             <div className="flex gap-1 flex-1">
               {weeks.map((week, weekIndex) => (
                 <div key={weekIndex} className="flex flex-col gap-1">
-                  {week.map((day, dayIndex) => {
+                  {week.map((day) => {
                     if (!day.isWithinYear) {
                       return <div key={day.date} className="w-3 h-3" />; // Invisible spacer
                     }

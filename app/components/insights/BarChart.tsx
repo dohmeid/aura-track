@@ -47,7 +47,7 @@ export default function BarChart({ data, height = 220 }: Props) {
         maxBarThickness: 32,
       },
     ],
-  } as any;
+  } as const;
 
   const options = {
     indexAxis: 'x',
@@ -65,7 +65,7 @@ export default function BarChart({ data, height = 220 }: Props) {
         cornerRadius: 12,
         displayColors: false,
         callbacks: {
-          label: function (context: any) {
+          label: function (context: { parsed: { y: number } }) {
             const v = context.parsed.y;
             return `${v} hrs`;
           },
@@ -93,7 +93,7 @@ export default function BarChart({ data, height = 220 }: Props) {
             border: { display: false }
         } 
     },
-  } as any;
+  } as const;
 
   return (
     <div className="w-full h-full min-h-[200px]">

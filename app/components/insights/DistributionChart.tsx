@@ -71,7 +71,7 @@ export default function DistributionChart({ data }: Props) {
         padding: 12,
         cornerRadius: 12,
         callbacks: {
-          label: function (context: any) {
+          label: function (context: { dataIndex: number }) {
             const idx = context.dataIndex;
             const val = values[idx];
             const pct = Math.round((val / total) * 100);
@@ -83,7 +83,7 @@ export default function DistributionChart({ data }: Props) {
     layout: {
         padding: 10
     }
-  } as any;
+  } as const;
 
   return (
     <div className="w-full h-full flex items-center justify-center">

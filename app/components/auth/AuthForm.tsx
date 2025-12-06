@@ -16,7 +16,7 @@ interface AuthFormProps {
 const FormContent: FC<{
   isLogin: boolean;
   state: AuthState;
-  formValues: any;
+  formValues: { email: string; username: string; password: string; confirmPassword: string; birthDate: string };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }> = ({ isLogin, state, formValues, handleInputChange }) => {
   const { pending } = useFormStatus();
@@ -157,19 +157,23 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
   // Handle URL messages (e.g. from Middleware redirect) on mount
   useEffect(() => {
     if (initialEmail) {
-      setFormValues((prev) => ({ ...prev, email: initialEmail }));
+      setTimeout(() => {
+        setFormValues((prev) => ({ ...prev, email: initialEmail }));
+      }, 0);
     }
 
     if (urlMessage) {
-      setSnackState({
-        show: true,
-        msg: urlMessage,
-        type: 'error', // Usually middleware redirects are due to auth errors
-      });
-      // Clear the param from URL to prevent showing it again on refresh
-      router.replace(isLogin ? '/login' : '/signup');
+      setTimeout(() => {
+        setSnackState({
+          show: true,
+          msg: urlMessage,
+          type: 'error', // Usually middleware redirects are due to auth errors
+        });
+        // Clear the param from URL to prevent showing it again on refresh
+        router.replace(isLogin ? '/login' : '/signup');
+      }, 0);
     }
-  }, [urlMessage, initialEmail, isLogin, router]);
+  }, [initialEmail, urlMessage, isLogin, router]);
 
   // Handle Server Action responses
   useEffect(() => {
@@ -177,11 +181,13 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
       // Determine type based on success boolean
       const type = state.success ? 'success' : 'error';
 
-      setSnackState({
-        show: true,
-        msg: state.message,
-        type,
-      });
+      setTimeout(() => {
+        setSnackState({
+          show: true,
+          msg: state.message,
+          type,
+        });
+      }, 0);
 
       // Handle redirect if successful
       if (
@@ -194,7 +200,7 @@ const AuthForm: FC<AuthFormProps> = ({ formAction, isLogin }) => {
         return () => clearTimeout(timer);
       }
     }
-  }, [state, router, redirectUrl]);
+  }, [state, redirectUrl]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

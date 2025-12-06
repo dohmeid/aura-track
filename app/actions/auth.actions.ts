@@ -82,7 +82,7 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
   } catch (error) {
     console.error('SIGNUP_ACTION_ERROR:', error);
     // Handle potential database errors (like unique index violations)
-    if (error && (error as any).code === 11000) {
+    if (error && (error as { code?: number }).code === 11000) {
       return {
         message: 'A user with that email or username already exists.',
         success: false,

@@ -28,7 +28,7 @@ export default function MoodOverview({ todayMood }: MoodOverviewProps) {
         <div className="relative z-10 flex flex-col h-full justify-between">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-lg font-medium opacity-90">Today's Aura</h3>
+              <h3 className="text-lg font-medium opacity-90">Today&apos;s Aura</h3>
               <p className="text-4xl font-bold mt-2 capitalize">{todayMood.moodEmotion}</p>
             </div>
             <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm transition-transform duration-300 group-hover:scale-105">
@@ -39,7 +39,7 @@ export default function MoodOverview({ todayMood }: MoodOverviewProps) {
 
           <div className="mt-6">
             <p className="text-lg opacity-90 line-clamp-2 italic">
-               "{todayMood.moodDescription || "No notes added for today."}"
+               &quot;{todayMood.moodDescription || "No notes added for today."}&quot;
             </p>
           </div>
 

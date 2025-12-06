@@ -10,16 +10,23 @@ interface SnackBarProps {
 }
 
 export default function SnackBar({ message, type = 'success', isVisible, onClose }: SnackBarProps) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(isVisible);
 
   // Sync internal state with prop
   useEffect(() => {
-    setShow(isVisible);
     if (isVisible) {
+      setTimeout(() => {
+        setShow(true);
+      }, 0);
       const timer = setTimeout(() => {
+        setShow(false);
         onClose();
       }, 8000);
       return () => clearTimeout(timer);
+    } else {
+      setTimeout(() => {
+        setShow(false);
+      }, 0);
     }
   }, [isVisible, onClose]);
 
